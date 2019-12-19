@@ -54,7 +54,7 @@ class PeopleView extends React.Component {
     let headers = new Headers();
     headers.set('Authorization', 'Basic ' + base64.encode(username + ":" + password));
 
-    fetch('http://localhost:8080/people',{method:'GET', headers: headers})
+    fetch('http://' + process.env.REACT_APP_API_URL + ':'+ process.env.REACT_APP_API_PORT + '/people',{method:'GET', headers: headers})
     .then(res => res.json())
     .then((data) => {
       console.log(data);
