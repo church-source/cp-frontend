@@ -18,11 +18,13 @@
 import Index from "views/Index.jsx";
 import Login from "views/Login.jsx";
 import People from "views/People.jsx";
+import Person from "views/Person.jsx";
 
 var routes = [
   {
     path: "/index",
     name: "Dashboard",
+    sidebar: true,
     icon: "ni ni-tv-2 text-primary",
     component: Index,
     layout: "/admin"
@@ -30,9 +32,19 @@ var routes = [
   {
     path: "/people",
     name: "People",
+    sidebar: true,
     icon: "ni ni-bullet-list-67 text-red",
     component: People,
     layout: "/admin"
+  },
+  {
+    path: "/person/:id",
+    name: "Person",
+    sidebar: false,
+    icon: "ni ni-bullet-list-67 text-red",
+    component: Person,
+    layout: "/admin"
   }
+  
 ];
 export default routes;

@@ -82,6 +82,7 @@ class Sidebar extends React.Component {
   createLinks = routes => {
     return routes.map((prop, key) => {
       return (
+        prop.sidebar == true && 
         <NavItem key={key}>
           <NavLink
             to={prop.layout + prop.path}

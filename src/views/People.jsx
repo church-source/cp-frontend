@@ -16,27 +16,15 @@
 
 */
 import React from "react";
-import People from "../components/People/People"
+import People from "../components/People/People.jsx"
 // reactstrap components
 import {
-  Badge,
   Card,
   CardHeader,
-  CardFooter,
-  DropdownMenu,
-  DropdownItem,
-  UncontrolledDropdown,
-  DropdownToggle,
-  Media,
-  Pagination,
-  PaginationItem,
-  PaginationLink,
-  Progress,
-  Table,
   Container,
-  Row,
-  UncontrolledTooltip
+  Row
 } from "reactstrap";
+
 // core components
 import Header from "components/Headers/Header.jsx";
 
@@ -46,7 +34,6 @@ class PeopleView extends React.Component {
   }
 
   componentDidMount() {
-    //this.setState({ people: [{"created":1576337822000,"modified":1576578427000,"deleted":false,"id":3,"firstName":"Candace","middleName":"Lynn","lastName":"Pillay","dateOfBirth":368064000000,"dateOfBaptism":1304121600000,"gender":"FEMALE"},{"created":1576228587000,"modified":1576578427000,"deleted":false,"id":2,"firstName":"Joe","middleName":null,"lastName":"Barber","dateOfBirth":670284000000,"dateOfBaptism":1214776800000,"gender":"MALE"},{"created":1576172479000,"modified":1576578427000,"deleted":false,"id":1,"firstName":"Rowan","middleName":"Marc","lastName":"Pillay","dateOfBirth":449445600000,"dateOfBaptism":1088546400000,"gender":"MALE"}] })
     let base64 = require('base-64');
 
     let username = 'admin';
@@ -62,6 +49,7 @@ class PeopleView extends React.Component {
     })
     .catch(console.log)
   }
+
   render() {
     return (
       <>
