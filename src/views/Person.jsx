@@ -131,7 +131,7 @@ class Person extends React.Component {
                               id="input-first-name"
                               placeholder="First name"
                               type="text"
-                              readonly="readonly"
+                              readOnly
                             />
                           </FormGroup>
                         </Col>
@@ -149,7 +149,7 @@ class Person extends React.Component {
                               id="input-middle-name"
                               placeholder="Middle name"
                               type="text"
-                              readonly="readonly"
+                              readOnly
                             />
                           </FormGroup>
                         </Col>
@@ -167,7 +167,7 @@ class Person extends React.Component {
                               id="input-last-name"
                               placeholder="Last name"
                               type="text"
-                              readonly="readonly"
+                              readOnly
                             />
                           </FormGroup>
                         </Col>
@@ -185,7 +185,7 @@ class Person extends React.Component {
                               id="input-gender"
                               placeholder=""
                               type="text"
-                              readonly="readonly"
+                              readOnly
                             />
                           </FormGroup>
                         </Col>
@@ -207,7 +207,7 @@ class Person extends React.Component {
                               id="input-birthday"
                               placeholder="Birthday"
                               type="text"
-                              readonly="readonly"
+                              readOnly
                             />
                           </FormGroup>
                         </Col>
@@ -225,7 +225,7 @@ class Person extends React.Component {
                               id="input-age"
                               placeholder="Age"
                               type="text"
-                              readonly="readonly"
+                              readOnly
                             />
                           </FormGroup>
                         </Col>
@@ -251,7 +251,7 @@ class Person extends React.Component {
                             id="input-email"
                             placeholder="test@example.com"
                             type="email"
-                            readonly="readonly"
+                            readOnly
                             />
                         </FormGroup>
                       </Col>
@@ -268,7 +268,7 @@ class Person extends React.Component {
                             id="input-tel-mobile"
                             placeholder="+27721234567"
                             type="tel"
-                            readonly="readonly"
+                            readOnly
                             />
                         </FormGroup>
                       </Col>
@@ -285,7 +285,7 @@ class Person extends React.Component {
                             id="input-tel-home"
                             placeholder="+27217654321"
                             type="tel"
-                            readonly="readonly"
+                            readOnly
                             />
                         </FormGroup>
                       </Col>
@@ -311,7 +311,7 @@ class Person extends React.Component {
                               id="input-address-street-number"
                               placeholder="Street Number"
                               type="text"
-                              readonly="readonly"
+                              readOnly
                             />
                           </FormGroup>
                         </Col>
@@ -329,7 +329,7 @@ class Person extends React.Component {
                               id="input-address-avenue"
                               placeholder="Street"
                               type="text"
-                              readonly="readonly"
+                              readOnly
                             />
                           </FormGroup>
                         </Col>
@@ -347,7 +347,7 @@ class Person extends React.Component {
                               id="input-address-suburb"
                               placeholder="Suburb"
                               type="text"
-                              readonly="readonly"
+                              readOnly
                             />
                           </FormGroup>
                           </Col>
@@ -367,7 +367,7 @@ class Person extends React.Component {
                               id="input-city"
                               placeholder="City"
                               type="text"
-                              readonly="readonly"
+                              readOnly
                             />
                           </FormGroup>
                         </Col>
@@ -385,7 +385,7 @@ class Person extends React.Component {
                               id="input-country"
                               placeholder="Country"
                               type="text"
-                              readonly="readonly"
+                              readOnly
                             />
                           </FormGroup>
                         </Col>
@@ -402,7 +402,7 @@ class Person extends React.Component {
                               id="input-postal-code"
                               placeholder="9999"
                               type="number"
-                              readonly="readonly"
+                              readOnly
                             />
                           </FormGroup>
                         </Col>
@@ -445,7 +445,7 @@ class Person extends React.Component {
                 </Row>
                 <CardHeader className="text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
                   <div className="d-flex justify-content-between">
-                    <Button
+                    {/*<Button
                       className="mr-4"
                       color="info"
                       href="#pablo"
@@ -462,7 +462,7 @@ class Person extends React.Component {
                       size="sm"
                     >
                       Message
-                    </Button>
+                    </Button>*/}
                   </div>
                 </CardHeader>
                 <CardBody className="pt-0 pt-md-4">

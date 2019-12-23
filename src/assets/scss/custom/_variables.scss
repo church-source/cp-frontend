@@ -549,7 +549,7 @@ $input-border-radius-lg:                $border-radius-lg !default;
 $input-border-radius-sm:                $border-radius-sm !default;
 
 $input-bg:                              $white !default;
-$input-disabled-bg:                     $gray-200 !default;
+$input-disabled-bg:                     #f5f5f5 !default;
 
 $input-muted-bg:                        #F7FAFE !default;
 $input-focus-muted-bg:                  lighten($input-muted-bg, 1%) !default;
