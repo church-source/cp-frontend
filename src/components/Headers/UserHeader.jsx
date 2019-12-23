@@ -42,14 +42,14 @@ class UserHeader extends React.Component {
               <Col lg="7" md="10">
                 <h1 className="display-2 text-white">Profile</h1>
                 {/*<p className="text-white mt-0 mb-5">
-                </p>*/}
+                </p>
                 <Button
                   color="info"
                   href="#pablo"
                   onClick={e => e.preventDefault()}
                 >
                   Edit profile
-                </Button>
+                </Button>*/}
               </Col>
             </Row>
           </Container>
