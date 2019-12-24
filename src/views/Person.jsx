@@ -150,7 +150,7 @@ class Person extends React.Component {
                 <CardBody>
                   {/*<Form>*/}
                     <h6 className="heading-small text-muted mb-4">
-                      User information
+                      User Info
                     </h6>
                     <div className="pl-lg-4">
                       <Row>
