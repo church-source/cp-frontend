@@ -15,9 +15,13 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
+import React, { Component } from 'react'
 import {calculateAge} from '../utils/Utils.js'
+import DatePicker from "react-datepicker";
+ 
+import "react-datepicker/dist/react-datepicker.css";
 
+import "../assets/css/react-datepicker.css";
 // reactstrap components
 import {
   Button,
@@ -29,18 +33,52 @@ import {
   Input,
   Container,
   Row,
-  Col
+  Col,
+  select
 } from "reactstrap";
 // core components
 import UserHeader from "components/Headers/UserHeader.jsx";
 
 class Person extends React.Component {
-  state = {
-    person: {}
+  constructor(){
+    super()
+
+    //state for characters value//
+    this.state = {
+      person: {},
+      editing: false
+    }  
+    this.handleGenderChange = this.handleGenderChange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleEditButtonClick = this.handleEditButtonClick.bind(this);
+  }
+
+  handleEditButtonClick(event) {
+    this.setState(prevState => ({
+      editing: !prevState.editing
+    }));
+  }
+
+  handleChange(event) {
+    const { name, value } = event.target;
+    this.setState((prevState) => {
+      let person = Object.assign({}, prevState.person);
+      person[name] = value;
+      return { person };
+    });
+  }
+
+  handleGenderChange = (event) => {
+    let newGender = event.target.value;
+    this.setState((prevState) => {
+      let person = Object.assign({}, prevState.person);
+      person.gender = newGender.toUpperCase();                 
+      return { person };                                 
+    })
   }
 
   componentDidMount() {
-    //this.setState({ people: [{"created":1576337822000,"modified":1576578427000,"deleted":false,"id":3,"firstName":"Candace","middleName":"Lynn","lastName":"Pillay","dateOfBirth":368064000000,"dateOfBaptism":1304121600000,"gender":"FEMALE"},{"created":1576228587000,"modified":1576578427000,"deleted":false,"id":2,"firstName":"Joe","middleName":null,"lastName":"Barber","dateOfBirth":670284000000,"dateOfBaptism":1214776800000,"gender":"MALE"},{"created":1576172479000,"modified":1576578427000,"deleted":false,"id":1,"firstName":"Rowan","middleName":"Marc","lastName":"Pillay","dateOfBirth":449445600000,"dateOfBaptism":1088546400000,"gender":"MALE"}] })
+
     let base64 = require('base-64');
 
     let username = 'admin';
@@ -63,7 +101,7 @@ class Person extends React.Component {
   render() {
     return (
       <>
-        <UserHeader />
+        <UserHeader heading={this.state.person.firstName + " " + this.state.person.lastName}/>
         {/* Page content */}
         <Container className="mt--7" fluid>
           <Row>
@@ -94,18 +132,17 @@ class Person extends React.Component {
                 <CardHeader className="bg-white border-0">
               
                   <Row className="align-items-center">
-                    <Col xs="8">
-                      <h3 className="mb-0">Details of {this.state.person.firstName}</h3>
+                    <Col xs="10">
                     </Col>
                     
-                    <Col className="text-right" xs="4">
+                    <Col className="text-right" xs="2">
                       <Button
                         color="primary"
                         href="#pablo"
-                        onClick={e => e.preventDefault()}
+                        onClick={this.handleEditButtonClick}
                         size="sm"
                       >
-                        Edit Profile
+                        { this.state.editing == true && "Cancel"}{this.state.editing == false && "Edit"}
                       </Button>
                     </Col>
                   </Row>
@@ -126,12 +163,14 @@ class Person extends React.Component {
                               First name
                             </label>
                             <Input
-                              className="form-control-alternative"
-                              defaultValue={this.state.person.firstName}
+                              className="form-control"
+                              name="firstName"
+                              onChange={this.handleChange}
+                              value={this.state.person.firstName || ''}
                               id="input-first-name"
                               placeholder="First name"
                               type="text"
-                              readOnly
+                              readOnly={!this.state.editing}
                             />
                           </FormGroup>
                         </Col>
@@ -144,12 +183,14 @@ class Person extends React.Component {
                               Middle name
                             </label>
                             <Input
-                              className="form-control-alternative"
-                              defaultValue={this.state.person.middleName}
+                              className="form-control"
+                              name="middleName"
+                              onChange={this.handleChange}
+                              value={this.state.person.middleName}
                               id="input-middle-name"
                               placeholder="Middle name"
                               type="text"
-                              readOnly
+                              readOnly={!this.state.editing}
                             />
                           </FormGroup>
                         </Col>
@@ -162,12 +203,14 @@ class Person extends React.Component {
                               Last name
                             </label>
                             <Input
-                              className="form-control-alternative"
-                              defaultValue={this.state.person.lastName}
+                              className="form-control"
+                              value={this.state.person.lastName}
+                              name="lastName"
+                              onChange={this.handleChange}
                               id="input-last-name"
                               placeholder="Last name"
                               type="text"
-                              readOnly
+                              readOnly={!this.state.editing}
                             />
                           </FormGroup>
                         </Col>
@@ -179,14 +222,11 @@ class Person extends React.Component {
                             >
                               Gender
                             </label>
-                            <Input
-                              className="form-control-alternative"
-                              value={('' + this.state.person.gender).toLowerCase().toString()}
-                              id="input-gender"
-                              placeholder=""
-                              type="text"
-                              readOnly
-                            />
+                            <select className="form-control" value={('' + this.state.person.gender).toUpperCase()}
+                               id="input-gender" readOnly={!this.state.editing} onChange={this.handleGenderChange}>
+                              <option value="MALE">male</option>
+                              <option value="FEMALE">female</option>
+                            </select>
                           </FormGroup>
                         </Col>
                         <Col lg="6">
@@ -197,7 +237,10 @@ class Person extends React.Component {
                             >
                               Birthday
                             </label>
-                            <Input
+                            <DatePicker className="form-control" 
+                              readOnly={!this.state.editing}
+                              value={this.state.person.dateOfBirth}/> 
+                            {/*<Input
                               className="form-control-alternative"
                               value={new Intl.DateTimeFormat(
                                 'en-GB', 
@@ -206,9 +249,8 @@ class Person extends React.Component {
                                   day: '2-digit'}).format(this.state.person.dateOfBirth)}
                               id="input-birthday"
                               placeholder="Birthday"
-                              type="text"
-                              readOnly
-                            />
+                              type="date"
+                              />*/}
                           </FormGroup>
                         </Col>
                         <Col lg="6">
@@ -220,12 +262,11 @@ class Person extends React.Component {
                               Age
                             </label>
                             <Input
-                              className="form-control-alternative"
-                              value={calculateAge(new Date(this.state.person.dateOfBirth))}
+                              value={" " + calculateAge(new Date(this.state.person.dateOfBirth))}
                               id="input-age"
                               placeholder="Age"
                               type="text"
-                              readOnly
+                              readOnly="true"
                             />
                           </FormGroup>
                         </Col>
@@ -247,11 +288,13 @@ class Person extends React.Component {
                             Email address
                           </label>
                           <Input
-                            className="form-control-alternative"
+                            className="form-control"
                             id="input-email"
+                            //name="email"
+                            //onChange={this.handleChange}
                             placeholder="test@example.com"
                             type="email"
-                            readOnly
+                            readOnly={!this.state.editing}
                             />
                         </FormGroup>
                       </Col>
@@ -265,10 +308,12 @@ class Person extends React.Component {
                           </label>
                           <Input
                             className="form-control-alternative"
+                            //name="mobileNumber"
+                            //onChange={this.handleChange}
                             id="input-tel-mobile"
                             placeholder="+27721234567"
                             type="tel"
-                            readOnly
+                            readOnly={!this.state.editing}
                             />
                         </FormGroup>
                       </Col>
@@ -281,11 +326,13 @@ class Person extends React.Component {
                             Home Number
                           </label>
                           <Input
-                            className="form-control-alternative"
+                            className="form-control"
                             id="input-tel-home"
+                            //name="homeNumber"
+                            //onChange={this.handleChange}
                             placeholder="+27217654321"
                             type="tel"
-                            readOnly
+                            readOnly={!this.state.editing}
                             />
                         </FormGroup>
                       </Col>
@@ -306,12 +353,12 @@ class Person extends React.Component {
                               Street Number
                             </label>
                             <Input
-                              className="form-control-alternative"
+                              className="form-control"
                               value="99"
                               id="input-address-street-number"
                               placeholder="Street Number"
                               type="text"
-                              readOnly
+                              readOnly={!this.state.editing}
                             />
                           </FormGroup>
                         </Col>
@@ -324,12 +371,12 @@ class Person extends React.Component {
                               Street/Avenue
                             </label>
                             <Input
-                              className="form-control-alternative"
+                              className="form-control"
                               defaultValue="1st Avenue"
                               id="input-address-avenue"
                               placeholder="Street"
                               type="text"
-                              readOnly
+                              readOnly={!this.state.editing}
                             />
                           </FormGroup>
                         </Col>
@@ -342,12 +389,12 @@ class Person extends React.Component {
                               Suburb/Town
                             </label>
                             <Input
-                              className="form-control-alternative"
+                              className="form-control"
                               defaultValue="Timbaktu"
                               id="input-address-suburb"
                               placeholder="Suburb"
                               type="text"
-                              readOnly
+                              readOnly={!this.state.editing}
                             />
                           </FormGroup>
                           </Col>
@@ -362,12 +409,12 @@ class Person extends React.Component {
                               City
                             </label>
                             <Input
-                              className="form-control-alternative"
+                              className="form-control"
                               defaultValue="Cape Town"
                               id="input-city"
                               placeholder="City"
                               type="text"
-                              readOnly
+                              readOnly={!this.state.editing}
                             />
                           </FormGroup>
                         </Col>
@@ -380,12 +427,12 @@ class Person extends React.Component {
                               Country
                             </label>
                             <Input
-                              className="form-control-alternative"
+                              className="form-control"
                               defaultValue="South Africa"
                               id="input-country"
                               placeholder="Country"
                               type="text"
-                              readOnly
+                              readOnly={!this.state.editing}
                             />
                           </FormGroup>
                         </Col>
@@ -398,17 +445,28 @@ class Person extends React.Component {
                               Postal code
                             </label>
                             <Input
-                              className="form-control-alternative"
+                              className="form-control"
                               id="input-postal-code"
                               placeholder="9999"
                               type="number"
-                              readOnly
+                              readOnly={!this.state.editing}
                             />
                           </FormGroup>
                         </Col>
                       </Row>
                     </div>
                     <hr className="my-4" />
+                    <Col className="text-right" lg="12">
+                    <Button
+                        color="primary"
+                        href="#pablo"
+                        onClick={this.handleEditButtonClick}
+                        size="lg"
+                        hidden={!this.state.editing}
+                      >
+                        Save
+                      </Button>
+                      </Col>
                     {/* Description 
                     <h6 className="heading-small text-muted mb-4">About me</h6>
                     <div className="pl-lg-4">
