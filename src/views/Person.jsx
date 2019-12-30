@@ -46,16 +46,28 @@ class Person extends React.Component {
     //state for characters value//
     this.state = {
       person: {},
-      editing: false
+      editing: false,
+      initialState: {}
     }  
     this.handleGenderChange = this.handleGenderChange.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleEditButtonClick = this.handleEditButtonClick.bind(this);
+    this.handleCancelButtonClick = this.handleCancelButtonClick.bind(this);
   }
 
   handleEditButtonClick(event) {
     this.setState(prevState => ({
-      editing: !prevState.editing
+      editing: true
+    }));
+  }
+
+  handleCancelButtonClick(event) {
+    this.setState(prevState => ({
+      editing: false
+    }));
+
+    this.setState(prevState => ({
+      person: this.state.initialState
     }));
   }
 
@@ -92,7 +104,7 @@ class Person extends React.Component {
     fetch('http://' + process.env.REACT_APP_API_URL + ':'+ process.env.REACT_APP_API_PORT + '/people/' + id,{method:'GET', headers: headers})
     .then(res => res.json())
     .then((data) => {
-      console.log(data);
+      this.setState({ initialState: data })
       this.setState({ person: data })
     })
     .catch(console.log)
@@ -138,11 +150,11 @@ class Person extends React.Component {
                     <Col className="text-right" xs="2">
                       <Button
                         color="primary"
-                        href="#pablo"
                         onClick={this.handleEditButtonClick}
                         size="sm"
+                        disabled={this.state.editing}
                       >
-                        { this.state.editing == true && "Cancel"}{this.state.editing == false && "Edit"}
+                        { this.state.editing == true && "Editing..."}{this.state.editing == false && "Edit"}
                       </Button>
                     </Col>
                   </Row>
@@ -188,7 +200,6 @@ class Person extends React.Component {
                               onChange={this.handleChange}
                               value={this.state.person.middleName}
                               id="input-middle-name"
-                              placeholder="Middle name"
                               type="text"
                               readOnly={!this.state.editing}
                             />
@@ -223,7 +234,8 @@ class Person extends React.Component {
                               Gender
                             </label>
                             <select className="form-control" value={('' + this.state.person.gender).toUpperCase()}
-                               id="input-gender" readOnly={!this.state.editing} onChange={this.handleGenderChange}>
+                               id="input-gender" disabled={!this.state.editing}
+                               readOnly={!this.state.editing} onChange={this.handleGenderChange}>
                               <option value="MALE">male</option>
                               <option value="FEMALE">female</option>
                             </select>
@@ -292,7 +304,7 @@ class Person extends React.Component {
                             id="input-email"
                             //name="email"
                             //onChange={this.handleChange}
-                            placeholder="test@example.com"
+                            value="test@example.com"
                             type="email"
                             readOnly={!this.state.editing}
                             />
@@ -311,7 +323,7 @@ class Person extends React.Component {
                             //name="mobileNumber"
                             //onChange={this.handleChange}
                             id="input-tel-mobile"
-                            placeholder="+27721234567"
+                            value="+27721234567"
                             type="tel"
                             readOnly={!this.state.editing}
                             />
@@ -330,7 +342,7 @@ class Person extends React.Component {
                             id="input-tel-home"
                             //name="homeNumber"
                             //onChange={this.handleChange}
-                            placeholder="+27217654321"
+                            value="+27217654321"
                             type="tel"
                             readOnly={!this.state.editing}
                             />
@@ -356,7 +368,7 @@ class Person extends React.Component {
                               className="form-control"
                               value="99"
                               id="input-address-street-number"
-                              placeholder="Street Number"
+                              value="Street Number"
                               type="text"
                               readOnly={!this.state.editing}
                             />
@@ -374,7 +386,7 @@ class Person extends React.Component {
                               className="form-control"
                               defaultValue="1st Avenue"
                               id="input-address-avenue"
-                              placeholder="Street"
+                              value="Street"
                               type="text"
                               readOnly={!this.state.editing}
                             />
@@ -392,7 +404,7 @@ class Person extends React.Component {
                               className="form-control"
                               defaultValue="Timbaktu"
                               id="input-address-suburb"
-                              placeholder="Suburb"
+                              value="Suburb"
                               type="text"
                               readOnly={!this.state.editing}
                             />
@@ -412,7 +424,7 @@ class Person extends React.Component {
                               className="form-control"
                               defaultValue="Cape Town"
                               id="input-city"
-                              placeholder="City"
+                              value="City"
                               type="text"
                               readOnly={!this.state.editing}
                             />
@@ -430,7 +442,7 @@ class Person extends React.Component {
                               className="form-control"
                               defaultValue="South Africa"
                               id="input-country"
-                              placeholder="Country"
+                              value="Country"
                               type="text"
                               readOnly={!this.state.editing}
                             />
@@ -447,7 +459,7 @@ class Person extends React.Component {
                             <Input
                               className="form-control"
                               id="input-postal-code"
-                              placeholder="9999"
+                              value="9999"
                               type="number"
                               readOnly={!this.state.editing}
                             />
@@ -458,14 +470,22 @@ class Person extends React.Component {
                     <hr className="my-4" />
                     <Col className="text-right" lg="12">
                     <Button
+                        color="secondary"
+                        onClick={this.handleCancelButtonClick}
+                        hidden={!this.state.editing}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
                         color="primary"
-                        href="#pablo"
                         onClick={this.handleEditButtonClick}
-                        size="lg"
                         hidden={!this.state.editing}
                       >
                         Save
                       </Button>
+                      </Col>
+                    <Col className="text-right" lg="12">
+
                       </Col>
                     {/* Description 
                     <h6 className="heading-small text-muted mb-4">About me</h6>
