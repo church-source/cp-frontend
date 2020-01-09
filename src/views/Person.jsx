@@ -17,11 +17,10 @@
 */
 import React, { Component } from 'react'
 import {calculateAge} from '../utils/Utils.js'
-import DatePicker from "react-datepicker";
- 
-import "react-datepicker/dist/react-datepicker.css";
+import DatePicker from 'react-date-picker';
 
 import "../assets/css/react-datepicker.css";
+
 // reactstrap components
 import {
   Button,
@@ -46,13 +45,17 @@ class Person extends React.Component {
     //state for characters value//
     this.state = {
       person: {},
+      address: {},
       editing: false,
-      initialState: {}
+      initialState: {},
+      birthDate: new Date()
     }  
     this.handleGenderChange = this.handleGenderChange.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    this.handlePersonInfoChange = this.handlePersonInfoChange.bind(this);
+    this.handleAddressInfoChange = this.handleAddressInfoChange.bind(this);
     this.handleEditButtonClick = this.handleEditButtonClick.bind(this);
     this.handleCancelButtonClick = this.handleCancelButtonClick.bind(this);
+    this.handleBirthDatePickerChange = this.handleBirthDatePickerChange.bind(this);
   }
 
   handleEditButtonClick(event) {
@@ -67,17 +70,40 @@ class Person extends React.Component {
     }));
 
     this.setState(prevState => ({
-      person: this.state.initialState
+      person: prevState.initialState
     }));
+
+    if (this.state.initialState && this.state.initialState.addresses && this.state.initialState.addresses.length > 0) {
+      this.setState(prevState => ({ address: prevState.initialState.addresses[0]}))
+    }
+
+    console.log(this.state.initialState)
+
+    if (this.state.initialState && this.state.initialState.dateOfBirth) {
+      this.setState(prevState => ({birthDate: new Date(prevState.initialState.dateOfBirth)})); 
+    }
   }
 
-  handleChange(event) {
+  handlePersonInfoChange(event) {
     const { name, value } = event.target;
     this.setState((prevState) => {
       let person = Object.assign({}, prevState.person);
       person[name] = value;
       return { person };
     });
+  }
+
+  handleAddressInfoChange(event) {
+    const { name, value } = event.target;
+    this.setState((prevState) => {
+      let address = Object.assign({}, prevState.address);
+      address[name] = value;
+      return { address };
+    });
+  }
+
+  handleBirthDatePickerChange = date => {
+    this.setState({ birthDate: date })
   }
 
   handleGenderChange = (event) => {
@@ -106,6 +132,10 @@ class Person extends React.Component {
     .then((data) => {
       this.setState({ initialState: data })
       this.setState({ person: data })
+      if (data && data.addresses && data.addresses.length > 0) {
+        this.setState({ address: data.addresses[0]})
+      }
+      this.setState({birthDate: new Date(data.dateOfBirth)}); 
     })
     .catch(console.log)
   }
@@ -142,7 +172,6 @@ class Person extends React.Component {
                   </Col>
                   </Row>
                 <CardHeader className="bg-white border-0">
-              
                   <Row className="align-items-center">
                     <Col xs="10">
                     </Col>
@@ -154,13 +183,14 @@ class Person extends React.Component {
                         size="sm"
                         disabled={this.state.editing}
                       >
-                        { this.state.editing == true && "Editing..."}{this.state.editing == false && "Edit"}
+                        { this.state.editing === true && "Editing..."}{this.state.editing === false && "Edit"}
                       </Button>
                     </Col>
                   </Row>
                 </CardHeader>
                 <CardBody>
                   {/*<Form>*/}
+                  <Form autoComplete="zzz">
                     <h6 className="heading-small text-muted mb-4">
                       User Info
                     </h6>
@@ -177,12 +207,12 @@ class Person extends React.Component {
                             <Input
                               className="form-control"
                               name="firstName"
-                              onChange={this.handleChange}
+                              onChange={this.handlePersonInfoChange}
                               value={this.state.person.firstName || ''}
                               id="input-first-name"
-                              placeholder="First name"
                               type="text"
                               readOnly={!this.state.editing}
+                              autoComplete="zzz"
                             />
                           </FormGroup>
                         </Col>
@@ -197,11 +227,12 @@ class Person extends React.Component {
                             <Input
                               className="form-control"
                               name="middleName"
-                              onChange={this.handleChange}
-                              value={this.state.person.middleName}
+                              onChange={this.handlePersonInfoChange}
+                              value={this.state.person.middleName || ''}
                               id="input-middle-name"
                               type="text"
                               readOnly={!this.state.editing}
+                              autoComplete="zzz"
                             />
                           </FormGroup>
                         </Col>
@@ -215,13 +246,13 @@ class Person extends React.Component {
                             </label>
                             <Input
                               className="form-control"
-                              value={this.state.person.lastName}
+                              value={this.state.person.lastName || ''}
                               name="lastName"
-                              onChange={this.handleChange}
+                              onChange={this.handlePersonInfoChange}
                               id="input-last-name"
-                              placeholder="Last name"
                               type="text"
                               readOnly={!this.state.editing}
+                              autoComplete="zzz"
                             />
                           </FormGroup>
                         </Col>
@@ -236,8 +267,10 @@ class Person extends React.Component {
                             <select className="form-control" value={('' + this.state.person.gender).toUpperCase()}
                                id="input-gender" disabled={!this.state.editing}
                                readOnly={!this.state.editing} onChange={this.handleGenderChange}>
+                              {(this.state.person.gender == null || this.state.person.gender == undefined) && <option value=''></option>}
                               <option value="MALE">male</option>
                               <option value="FEMALE">female</option>
+                              
                             </select>
                           </FormGroup>
                         </Col>
@@ -249,20 +282,17 @@ class Person extends React.Component {
                             >
                               Birthday
                             </label>
-                            <DatePicker className="form-control" 
-                              readOnly={!this.state.editing}
-                              value={this.state.person.dateOfBirth}/> 
-                            {/*<Input
-                              className="form-control-alternative"
-                              value={new Intl.DateTimeFormat(
-                                'en-GB', 
-                                  {year: 'numeric', 
-                                  month: '2-digit',
-                                  day: '2-digit'}).format(this.state.person.dateOfBirth)}
-                              id="input-birthday"
-                              placeholder="Birthday"
-                              type="date"
-                              />*/}
+                                    {console.log(this.state.birthDate)}
+                            <DatePicker
+                              className="form-control"
+                              disabled={!this.state.editing}
+                              value={this.state.birthDate}
+                              maxDate={new Date()}
+                              format="dd/MM/yyyy"
+                              id="dateOfBirth"
+                              name="dateOfBirth"
+                              onChange={this.handleBirthDatePickerChange}
+                              />
                           </FormGroup>
                         </Col>
                         <Col lg="6">
@@ -276,9 +306,9 @@ class Person extends React.Component {
                             <Input
                               value={" " + calculateAge(new Date(this.state.person.dateOfBirth))}
                               id="input-age"
-                              placeholder="Age"
                               type="text"
-                              readOnly="true"
+                              readOnly={true}
+                              autoComplete="zzz"
                             />
                           </FormGroup>
                         </Col>
@@ -302,11 +332,12 @@ class Person extends React.Component {
                           <Input
                             className="form-control"
                             id="input-email"
-                            //name="email"
-                            //onChange={this.handleChange}
+                            name="email"
+                            //onChange={this.handlePersonInfoChange}
                             value="test@example.com"
                             type="email"
                             readOnly={!this.state.editing}
+                            autoComplete="zzz"
                             />
                         </FormGroup>
                       </Col>
@@ -314,18 +345,19 @@ class Person extends React.Component {
                         <FormGroup>
                           <label
                             className="form-control-label"
-                            htmlFor="input-email"
+                            htmlFor="input-tel-mobile"
                           >
                             Mobile Number
                           </label>
                           <Input
-                            className="form-control-alternative"
-                            //name="mobileNumber"
-                            //onChange={this.handleChange}
+                            className="form-control"
+                            name="mobileNumber"
+                            //onChange={this.handlePersonInfoChange}
                             id="input-tel-mobile"
                             value="+27721234567"
                             type="tel"
                             readOnly={!this.state.editing}
+                            autoComplete="zzz"
                             />
                         </FormGroup>
                       </Col>
@@ -333,18 +365,19 @@ class Person extends React.Component {
                         <FormGroup>
                           <label
                             className="form-control-label"
-                            htmlFor="input-email"
+                            htmlFor="input-tel-home"
                           >
                             Home Number
                           </label>
                           <Input
                             className="form-control"
                             id="input-tel-home"
-                            //name="homeNumber"
-                            //onChange={this.handleChange}
+                            name="homeNumber"
+                            //onChange={this.handlePersonInfoChange}
                             value="+27217654321"
                             type="tel"
                             readOnly={!this.state.editing}
+                            autoComplete="zzz"
                             />
                         </FormGroup>
                       </Col>
@@ -360,21 +393,23 @@ class Person extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-address"
+                              htmlFor="input-address-street-number"
                             >
-                              Street Number
+                              Street Number:
                             </label>
                             <Input
                               className="form-control"
-                              value="99"
+                              name="streetNumber"
+                              onChange={this.handleAddressInfoChange}
                               id="input-address-street-number"
-                              value="Street Number"
+                              value={this.state.address.streetNumber || ''}
                               type="text"
                               readOnly={!this.state.editing}
+                              autoComplete="zzz"
                             />
                           </FormGroup>
                         </Col>
-                        <Col md="6">
+                        <Col md="5">
                           <FormGroup>
                             <label
                               className="form-control-label"
@@ -384,11 +419,13 @@ class Person extends React.Component {
                             </label>
                             <Input
                               className="form-control"
-                              defaultValue="1st Avenue"
-                              id="input-address-avenue"
-                              value="Street"
+                              name="street"
+                              onChange={this.handleAddressInfoChange}
+                              id="input-address-street"
+                              value={this.state.address.street || ''}
                               type="text"
                               readOnly={!this.state.editing}
+                              autoComplete="zzz"
                             />
                           </FormGroup>
                         </Col>
@@ -396,20 +433,64 @@ class Person extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-address-street"
+                              htmlFor="input-address-suburb"
                             >
-                              Suburb/Town
+                              Suburb/District
                             </label>
                             <Input
                               className="form-control"
-                              defaultValue="Timbaktu"
+                              name="suburb"
+                              onChange={this.handleAddressInfoChange}
                               id="input-address-suburb"
-                              value="Suburb"
+                              value={this.state.address.suburb || ''}
                               type="text"
                               readOnly={!this.state.editing}
+                              autoComplete="zzz"
                             />
                           </FormGroup>
                           </Col>
+                      </Row>
+                      <Row>
+                      <Col md="3">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-address-unit-number"
+                            >
+                              Unit Number (if applicable)
+                            </label>
+                            <Input
+                              className="form-control"
+                              value={this.state.address.unitNumber || ''}
+                              name="unitNumber"
+                              onChange={this.handleAddressInfoChange}
+                              id="input-address-unit-number"
+                              type="text"
+                              readOnly={!this.state.editing}
+                              autoComplete="zzz"
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col md="6">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-address-complex"
+                            >
+                              Complex (if applicable)
+                            </label>
+                            <Input
+                              className="form-control"
+                              name="complex"
+                              onChange={this.handleAddressInfoChange}
+                              id="input-address-complex"
+                              value={this.state.address.complex || ''}
+                              type="text"
+                              readOnly={!this.state.editing}
+                              autoComplete="zzz"
+                            />
+                          </FormGroup>
+                        </Col>
                       </Row>
                       <Row>
                         <Col lg="4">
@@ -418,15 +499,37 @@ class Person extends React.Component {
                               className="form-control-label"
                               htmlFor="input-city"
                             >
-                              City
+                              City/Town
                             </label>
                             <Input
                               className="form-control"
-                              defaultValue="Cape Town"
+                              name="city"
+                              onChange={this.handleAddressInfoChange}
                               id="input-city"
-                              value="City"
+                              value={this.state.address.city || ''}
                               type="text"
                               readOnly={!this.state.editing}
+                              autoComplete="zzz"
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col lg="4">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-province"
+                            >
+                              Province
+                            </label>
+                            <Input
+                              className="form-control"
+                              value={this.state.address.province || ''}
+                              onChange={this.handleAddressInfoChange}
+                              name="province"
+                              id="input-province"
+                              type="text"
+                              readOnly={!this.state.editing}
+                              autoComplete="zzz"
                             />
                           </FormGroup>
                         </Col>
@@ -440,11 +543,13 @@ class Person extends React.Component {
                             </label>
                             <Input
                               className="form-control"
-                              defaultValue="South Africa"
+                              value={this.state.address.country || ''}
+                              onChange={this.handleAddressInfoChange}
+                              name="country"
                               id="input-country"
-                              value="Country"
                               type="text"
                               readOnly={!this.state.editing}
+                              autoComplete="zzz"
                             />
                           </FormGroup>
                         </Col>
@@ -452,16 +557,19 @@ class Person extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-country"
+                              htmlFor="input-postal-code"
                             >
                               Postal code
                             </label>
                             <Input
                               className="form-control"
+                              name="postalCode"
+                              value={this.state.address.postalCode || ''}
+                              onChange={this.handleAddressInfoChange}
                               id="input-postal-code"
-                              value="9999"
-                              type="number"
+                              type="text"
                               readOnly={!this.state.editing}
+                              autoComplete="zzz"
                             />
                           </FormGroup>
                         </Col>
@@ -484,9 +592,8 @@ class Person extends React.Component {
                         Save
                       </Button>
                       </Col>
-                    <Col className="text-right" lg="12">
+                    </Form>
 
-                      </Col>
                     {/* Description 
                     <h6 className="heading-small text-muted mb-4">About me</h6>
                     <div className="pl-lg-4">
