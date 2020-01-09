@@ -333,8 +333,8 @@ class Person extends React.Component {
                             className="form-control"
                             id="input-email"
                             name="email"
-                            //onChange={this.handlePersonInfoChange}
-                            value="test@example.com"
+                            onChange={this.handlePersonInfoChange}
+                            value={this.state.person.email}
                             type="email"
                             readOnly={!this.state.editing}
                             autoComplete="zzz"
@@ -352,9 +352,9 @@ class Person extends React.Component {
                           <Input
                             className="form-control"
                             name="mobileNumber"
-                            //onChange={this.handlePersonInfoChange}
+                            onChange={this.handlePersonInfoChange}
                             id="input-tel-mobile"
-                            value="+27721234567"
+                            value={this.state.person.mobileNumber}
                             type="tel"
                             readOnly={!this.state.editing}
                             autoComplete="zzz"
@@ -373,8 +373,8 @@ class Person extends React.Component {
                             className="form-control"
                             id="input-tel-home"
                             name="homeNumber"
-                            //onChange={this.handlePersonInfoChange}
-                            value="+27217654321"
+                            onChange={this.handlePersonInfoChange}
+                            value={this.state.person.homeNumber}
                             type="tel"
                             readOnly={!this.state.editing}
                             autoComplete="zzz"
