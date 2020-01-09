@@ -282,7 +282,6 @@ class Person extends React.Component {
                             >
                               Birthday
                             </label>
-                                    {console.log(this.state.birthDate)}
                             <DatePicker
                               className="form-control"
                               disabled={!this.state.editing}
@@ -304,7 +303,7 @@ class Person extends React.Component {
                               Age
                             </label>
                             <Input
-                              value={" " + calculateAge(new Date(this.state.person.dateOfBirth))}
+                              value={" " + calculateAge(new Date(this.state.birthDate))}
                               id="input-age"
                               type="text"
                               readOnly={true}
