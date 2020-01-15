@@ -51,11 +51,7 @@ render () {
                               </td>
                               <td>{person.firstName} {person.lastName}</td>
                               
-                              <td>{new Intl.DateTimeFormat(
-                                'en-GB', 
-                                  {year: 'numeric', 
-                                  month: '2-digit',
-                                  day: '2-digit'}).format(person.dateOfBirth)}</td>
+                              <td>{person.dateOfBirth}</td>
 
                               <td className="text-right">
                                 <UncontrolledDropdown>
