@@ -17,9 +17,10 @@
 */
 import React, { Component } from 'react'
 import {calculateAge} from '../utils/Utils.js'
-import DatePicker from 'react-date-picker';
+import DatePicker from 'react-date-picker'
+import clonedeep from 'lodash.clonedeep'
 
-import "../assets/css/react-datepicker.css";
+import "../assets/css/react-datepicker.css"
 
 // reactstrap components
 import {
@@ -34,9 +35,9 @@ import {
   Row,
   Col,
   select
-} from "reactstrap";
+} from "reactstrap"
 // core components
-import UserHeader from "components/Headers/UserHeader.jsx";
+import UserHeader from "components/Headers/UserHeader.jsx"
 
 class Person extends React.Component {
   constructor(){
@@ -44,85 +45,107 @@ class Person extends React.Component {
 
     //state for characters value//
     this.state = {
-      person: {},
-      address: {},
+      person: { address: {}},
       editing: false,
-      initialState: {},
-      birthDate: new Date()
+      initialState: {}
     }  
-    this.handleGenderChange = this.handleGenderChange.bind(this);
-    this.handlePersonInfoChange = this.handlePersonInfoChange.bind(this);
-    this.handleAddressInfoChange = this.handleAddressInfoChange.bind(this);
-    this.handleEditButtonClick = this.handleEditButtonClick.bind(this);
-    this.handleCancelButtonClick = this.handleCancelButtonClick.bind(this);
-    this.handleBirthDatePickerChange = this.handleBirthDatePickerChange.bind(this);
+    this.handleGenderChange = this.handleGenderChange.bind(this)
+    this.handlePersonInfoChange = this.handlePersonInfoChange.bind(this)
+    this.handleAddressInfoChange = this.handleAddressInfoChange.bind(this)
+    this.handleEditButtonClick = this.handleEditButtonClick.bind(this)
+    this.handleCancelButtonClick = this.handleCancelButtonClick.bind(this)
+    this.handleBirthDatePickerChange = this.handleBirthDatePickerChange.bind(this)
   }
 
   handleEditButtonClick(event) {
     this.setState(prevState => ({
       editing: true
-    }));
+    }))
   }
 
   handleCancelButtonClick(event) {
     this.setState(prevState => ({
       editing: false
-    }));
+    }))
+
+    const initialState = clonedeep(this.state.initialState)
 
     this.setState(prevState => ({
-      person: prevState.initialState
-    }));
-
-    if (this.state.initialState && this.state.initialState.addresses && this.state.initialState.addresses.length > 0) {
-      this.setState(prevState => ({ address: prevState.initialState.addresses[0]}))
-    }
-
-    console.log(this.state.initialState)
-
-    if (this.state.initialState && this.state.initialState.dateOfBirth) {
-      this.setState(prevState => ({birthDate: new Date(prevState.initialState.dateOfBirth)})); 
-    }
+      person: initialState
+    }))
   }
 
   handlePersonInfoChange(event) {
-    const { name, value } = event.target;
+    const { name, value } = event.target
     this.setState((prevState) => {
-      let person = Object.assign({}, prevState.person);
-      person[name] = value;
-      return { person };
-    });
+      let person = Object.assign({}, prevState.person)
+      person[name] = value
+      return { person }
+    })
   }
 
   handleAddressInfoChange(event) {
-    const { name, value } = event.target;
+    const { name, value } = event.target
     this.setState((prevState) => {
-      let address = Object.assign({}, prevState.address);
-      address[name] = value;
-      return { address };
-    });
+      const { person } = { ...prevState }
+      const { homeAddress } = { ...person }
+      if (homeAddress == undefined) {
+        let hAddress = {}
+        hAddress[name] = value
+        person.homeAddress = hAddress
+      } else {
+        homeAddress[name] = value
+      }
+      return { person }
+    })
   }
 
   handleBirthDatePickerChange = date => {
-    this.setState({ birthDate: date })
+    this.setState((prevState) => {
+      let person = Object.assign({}, prevState.person)
+      person['dateOfBirth'] = date
+      return { person }
+    })
   }
 
   handleGenderChange = (event) => {
-    let newGender = event.target.value;
+    let newGender = event.target.value
     this.setState((prevState) => {
-      let person = Object.assign({}, prevState.person);
-      person.gender = newGender.toUpperCase();                 
-      return { person };                                 
+      let person = Object.assign({}, prevState.person)
+      person.gender = newGender.toUpperCase()                 
+      return { person }                                 
     })
+  }
+
+
+  initializeStateFromInitialData = (data) => {
+    const initialData = clonedeep(data)
+    this.setState({ initialState: initialData })
+    this.setState({ person: data })
+  }
+
+
+  handleCancelButtonClick(event) {
+    this.setState(prevState => ({
+      editing: false
+    }))
+
+    const initialData = clonedeep(this.state.initialState)
+    this.initializeStateFromInitialData(initialData)
+
+    if (this.state.initialState && this.state.initialState.dateOfBirth) {
+      this.setState(prevState => ({birthDate: new Date(prevState.initialState.dateOfBirth)})) 
+    }
   }
 
   componentDidMount() {
 
-    let base64 = require('base-64');
+    let base64 = require('base-64')
 
-    let username = 'admin';
-    let password = 'password';
-    let headers = new Headers();
-    headers.set('Authorization', 'Basic ' + base64.encode(username + ":" + password));
+    let username = 'admin'
+    let password = 'password'
+    let headers = new Headers()
+    headers.set('Authorization', 'Basic ' + base64.encode(username + ":" + password))
 
     const {match} = this.props
     const id = match.params.id
@@ -130,12 +153,7 @@ class Person extends React.Component {
     fetch('http://' + process.env.REACT_APP_API_URL + ':'+ process.env.REACT_APP_API_PORT + '/people/' + id,{method:'GET', headers: headers})
     .then(res => res.json())
     .then((data) => {
-      this.setState({ initialState: data })
-      this.setState({ person: data })
-      if (data && data.addresses && data.addresses.length > 0) {
-        this.setState({ address: data.addresses[0]})
-      }
-      this.setState({birthDate: new Date(data.dateOfBirth)}); 
+      this.initializeStateFromInitialData(data)
     })
     .catch(console.log)
   }
@@ -285,7 +303,7 @@ class Person extends React.Component {
                             <DatePicker
                               className="form-control"
                               disabled={!this.state.editing}
-                              value={this.state.birthDate}
+                              value={this.state.person.dateOfBirth != null ? (new Date(this.state.person.dateOfBirth) || '') : ''}
                               maxDate={new Date()}
                               format="dd/MM/yyyy"
                               id="dateOfBirth"
@@ -303,7 +321,7 @@ class Person extends React.Component {
                               Age
                             </label>
                             <Input
-                              value={" " + calculateAge(new Date(this.state.birthDate))}
+                              value={" " + calculateAge(this.state.person.dateOfBirth)}
                               id="input-age"
                               type="text"
                               readOnly={true}
@@ -333,7 +351,7 @@ class Person extends React.Component {
                             id="input-email"
                             name="email"
                             onChange={this.handlePersonInfoChange}
-                            value={this.state.person.email}
+                            value={this.state.person.email != null ? (this.state.person.email || '') : ''}
                             type="email"
                             readOnly={!this.state.editing}
                             autoComplete="zzz"
@@ -353,7 +371,7 @@ class Person extends React.Component {
                             name="mobileNumber"
                             onChange={this.handlePersonInfoChange}
                             id="input-tel-mobile"
-                            value={this.state.person.mobileNumber}
+                            value={this.state.person.mobileNumber != null ? (this.state.person.mobileNumber || '') : ''}
                             type="tel"
                             readOnly={!this.state.editing}
                             autoComplete="zzz"
@@ -373,7 +391,7 @@ class Person extends React.Component {
                             id="input-tel-home"
                             name="homeNumber"
                             onChange={this.handlePersonInfoChange}
-                            value={this.state.person.homeNumber}
+                            value={this.state.person.homeNumber != null ? (this.state.person.homeNumber || '') : ''}
                             type="tel"
                             readOnly={!this.state.editing}
                             autoComplete="zzz"
@@ -401,7 +419,7 @@ class Person extends React.Component {
                               name="streetNumber"
                               onChange={this.handleAddressInfoChange}
                               id="input-address-street-number"
-                              value={this.state.address.streetNumber || ''}
+                              value={this.state.person.homeAddress != null ? (this.state.person.homeAddress.streetNumber || '') : ''}
                               type="text"
                               readOnly={!this.state.editing}
                               autoComplete="zzz"
@@ -421,7 +439,7 @@ class Person extends React.Component {
                               name="street"
                               onChange={this.handleAddressInfoChange}
                               id="input-address-street"
-                              value={this.state.address.street || ''}
+                              value={this.state.person.homeAddress != null ? (this.state.person.homeAddress.street || '') : ''}
                               type="text"
                               readOnly={!this.state.editing}
                               autoComplete="zzz"
@@ -441,7 +459,7 @@ class Person extends React.Component {
                               name="suburb"
                               onChange={this.handleAddressInfoChange}
                               id="input-address-suburb"
-                              value={this.state.address.suburb || ''}
+                              value={this.state.person.homeAddress != null ? (this.state.person.homeAddress.suburb || '') : ''}
                               type="text"
                               readOnly={!this.state.editing}
                               autoComplete="zzz"
@@ -460,7 +478,7 @@ class Person extends React.Component {
                             </label>
                             <Input
                               className="form-control"
-                              value={this.state.address.unitNumber || ''}
+                              value={this.state.person.homeAddress != null ? (this.state.person.homeAddress.unitNumber || '') : ''}
                               name="unitNumber"
                               onChange={this.handleAddressInfoChange}
                               id="input-address-unit-number"
@@ -483,7 +501,7 @@ class Person extends React.Component {
                               name="complex"
                               onChange={this.handleAddressInfoChange}
                               id="input-address-complex"
-                              value={this.state.address.complex || ''}
+                              value={this.state.person.homeAddress != null ? (this.state.person.homeAddress.complex || '') : ''}
                               type="text"
                               readOnly={!this.state.editing}
                               autoComplete="zzz"
@@ -505,8 +523,7 @@ class Person extends React.Component {
                               name="city"
                               onChange={this.handleAddressInfoChange}
                               id="input-city"
-                              value={this.state.address.city || ''}
-                              type="text"
+                              value={this.state.person.homeAddress != null ? (this.state.person.homeAddress.city || '') : ''}
                               readOnly={!this.state.editing}
                               autoComplete="zzz"
                             />
@@ -522,7 +539,7 @@ class Person extends React.Component {
                             </label>
                             <Input
                               className="form-control"
-                              value={this.state.address.province || ''}
+                              value={this.state.person.homeAddress != null ? (this.state.person.homeAddress.province || '') : ''}
                               onChange={this.handleAddressInfoChange}
                               name="province"
                               id="input-province"
@@ -542,7 +559,7 @@ class Person extends React.Component {
                             </label>
                             <Input
                               className="form-control"
-                              value={this.state.address.country || ''}
+                              value={this.state.person.homeAddress != null ? (this.state.person.homeAddress.country || '') : ''}
                               onChange={this.handleAddressInfoChange}
                               name="country"
                               id="input-country"
@@ -563,7 +580,7 @@ class Person extends React.Component {
                             <Input
                               className="form-control"
                               name="postalCode"
-                              value={this.state.address.postalCode || ''}
+                              value={this.state.person.homeAddress != null ? (this.state.person.homeAddress.postalCode || '') : ''} 
                               onChange={this.handleAddressInfoChange}
                               id="input-postal-code"
                               type="text"
@@ -684,8 +701,8 @@ class Person extends React.Component {
           </Row>
         </Container>
       </>
-    );
+    )
   }
 }
 
-export default Person;
+export default Person
