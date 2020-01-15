@@ -55,6 +55,36 @@ class Person extends React.Component {
     this.handleEditButtonClick = this.handleEditButtonClick.bind(this)
     this.handleCancelButtonClick = this.handleCancelButtonClick.bind(this)
     this.handleBirthDatePickerChange = this.handleBirthDatePickerChange.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+
+  }
+
+  handleSubmit(event) {
+    this.setState(prevState => ({
+      editing: false
+    }))
+    event.preventDefault();
+
+    let base64 = require('base-64')
+
+    let username = 'admin'
+    let password = 'password'
+    let headers = new Headers()
+    headers.set('Authorization', 'Basic ' + base64.encode(username + ":" + password))
+    headers.set('Accept', 'application/json');
+    headers.set('Content-Type', 'application/json');
+
+    const clonedState = clonedeep(this.state.person)
+    clonedState.dateOfBirth = new Date(this.state.person.dateOfBirth)
+    fetch('http://' + process.env.REACT_APP_API_URL + ':'+ process.env.REACT_APP_API_PORT + '/people/' + this.state.person.id,{
+        method: "PUT",
+        body: JSON.stringify(clonedState),
+        headers: headers
+      }).then(response => {
+        response.json().then(data =>{
+          console.log("Successful" + data);
+        })
+    })
   }
 
   handleEditButtonClick(event) {
@@ -208,7 +238,7 @@ class Person extends React.Component {
                 </CardHeader>
                 <CardBody>
                   {/*<Form>*/}
-                  <Form autoComplete="zzz">
+                  <Form autoComplete="zzz" onSubmit="handleSubmit">
                     <h6 className="heading-small text-muted mb-4">
                       User Info
                     </h6>
@@ -600,9 +630,9 @@ class Person extends React.Component {
                       >
                         Cancel
                       </Button>
-                      <Button
+                      < Button
                         color="primary"
-                        onClick={this.handleEditButtonClick}
+                        onClick={this.handleSubmit}
                         hidden={!this.state.editing}
                       >
                         Save
