@@ -21,6 +21,7 @@ import People from "../components/People/People.jsx"
 import {
   Card,
   CardHeader,
+  Col,
   Container,
   Row
 } from "reactstrap";
@@ -54,20 +55,31 @@ class PeopleView extends React.Component {
     return (
       <>
         <Header />
+
         {/* Page content */}
         <Container className="mt--7" fluid>
-          {/* Table */}
           <Row>
           <div className="col">
             <Card className="shadow">
               <CardHeader className="border-0">
-                <h3 className="mb-0">People</h3>
+                <Row >
+                  <Col sm="8">
+                    <h2 className="mb-0">People</h2>
+                  </Col>
+                  <Col sm="4" className="text-right">
+                                   <div><a
+                                    href={"/admin/person"}
+                                    id="tooltip742438047">                  <i className="fas fa-plus fa-2x" />  </a></div>
+  
+                  </Col>
+                </Row>
               </CardHeader>
               <People people={this.state.people} />
-              </Card>
+            </Card>
           </div>
           </Row>
         </Container>
+
       </>
     );
   }

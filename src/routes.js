@@ -18,7 +18,9 @@
 import Index from "views/Index.jsx";
 import Login from "views/Login.jsx";
 import People from "views/People.jsx";
-import Person from "views/Person.jsx";
+import AddPerson from "views/AddPerson.jsx";
+import ViewEditPerson from "views/ViewEditPerson.jsx";
+
 
 var routes = [
   {
@@ -39,12 +41,20 @@ var routes = [
   },
   {
     path: "/person/:id",
-    name: "Person",
+    name: "View/Edit Person",
     sidebar: false,
     icon: "ni ni-bullet-list-67 text-red",
-    component: Person,
+    component: ViewEditPerson,
     layout: "/admin"
-  }
+  },
+  {
+    path: "/person",
+    name: "Add Person",
+    sidebar: false,
+    icon: "ni ni-bullet-list-67 text-red",
+    component: AddPerson,
+    layout: "/admin"
+  },
   
 ];
 export default routes;

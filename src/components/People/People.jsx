@@ -49,7 +49,10 @@ render () {
                                     </a>
                                 </div>
                               </td>
-                              <td>{person.firstName} {person.lastName}</td>
+                              <td><div>                                  
+                                <a href={"/admin/person/" + person.id} id="tooltip742438047"
+                                  >{person.firstName} {person.lastName}</a>
+                                  </div></td>
                               
                               <td>{person.dateOfBirth}</td>
 

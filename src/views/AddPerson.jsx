@@ -39,20 +39,18 @@ import {
 // core components
 import UserHeader from "components/Headers/UserHeader.jsx"
 
-class Person extends React.Component {
+class AddPerson extends React.Component {
   constructor(){
     super()
 
     //state for characters value//
     this.state = {
       person: { address: {}},
-      editing: false,
       initialState: {}
     }  
     this.handleGenderChange = this.handleGenderChange.bind(this)
     this.handlePersonInfoChange = this.handlePersonInfoChange.bind(this)
     this.handleAddressInfoChange = this.handleAddressInfoChange.bind(this)
-    this.handleEditButtonClick = this.handleEditButtonClick.bind(this)
     this.handleCancelButtonClick = this.handleCancelButtonClick.bind(this)
     this.handleBirthDatePickerChange = this.handleBirthDatePickerChange.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -76,33 +74,21 @@ class Person extends React.Component {
 
     const clonedState = clonedeep(this.state.person)
     clonedState.dateOfBirth = new Date(this.state.person.dateOfBirth)
-    fetch('http://' + process.env.REACT_APP_API_URL + ':'+ process.env.REACT_APP_API_PORT + '/people/' + this.state.person.id,{
-        method: "PUT",
+    fetch('http://' + process.env.REACT_APP_API_URL + ':'+ process.env.REACT_APP_API_PORT + '/people',{
+        method: "POST",
         body: JSON.stringify(clonedState),
         headers: headers
       }).then(response => {
         response.json().then(data =>{
           console.log("Successful" + data);
+          document.location = "person/" + data.id;
         })
     })
   }
 
-  handleEditButtonClick(event) {
-    this.setState(prevState => ({
-      editing: true
-    }))
-  }
-
   handleCancelButtonClick(event) {
-    this.setState(prevState => ({
-      editing: false
-    }))
-
-    const initialState = clonedeep(this.state.initialState)
-
-    this.setState(prevState => ({
-      person: initialState
-    }))
+    console.log('here');
+    document.location = "people/";
   }
 
   handlePersonInfoChange(event) {
@@ -147,51 +133,13 @@ class Person extends React.Component {
     })
   }
 
-
-  initializeStateFromInitialData = (data) => {
-    const initialData = clonedeep(data)
-    this.setState({ initialState: initialData })
-    this.setState({ person: data })
-  }
-
-
-  handleCancelButtonClick(event) {
-    this.setState(prevState => ({
-      editing: false
-    }))
-
-    const initialData = clonedeep(this.state.initialState)
-    this.initializeStateFromInitialData(initialData)
-
-    if (this.state.initialState && this.state.initialState.dateOfBirth) {
-      this.setState(prevState => ({birthDate: new Date(prevState.initialState.dateOfBirth)})) 
-    }
-  }
-
   componentDidMount() {
-
-    let base64 = require('base-64')
-
-    let username = 'admin'
-    let password = 'password'
-    let headers = new Headers()
-    headers.set('Authorization', 'Basic ' + base64.encode(username + ":" + password))
-
-    const {match} = this.props
-    const id = match.params.id
-
-    fetch('http://' + process.env.REACT_APP_API_URL + ':'+ process.env.REACT_APP_API_PORT + '/people/' + id,{method:'GET', headers: headers})
-    .then(res => res.json())
-    .then((data) => {
-      this.initializeStateFromInitialData(data)
-    })
-    .catch(console.log)
   }
  
   render() {
     return (
       <>
-        <UserHeader heading={this.state.person.firstName + " " + this.state.person.lastName}/>
+        <UserHeader heading="Adding a New Person..."/>
         {/* Page content */}
         <Container className="mt--7" fluid>
           <Row>
@@ -215,25 +163,34 @@ class Person extends React.Component {
                                       src={require("assets/img/theme/man.png")}
                                       />
                                     }
+                                    { (this.state.person.gender !== "MALE" && this.state.person.gender !== "FEMALE") && 
+                                      <img
+                                      alt="..."
+                                      className="rounded-circle"
+                                      src={require("assets/img/theme/undefined.png")}
+                                      />
+                                    }
                       </a>
                     </div>
                   </Col>
                   </Row>
                 <CardHeader className="bg-white border-0">
                   <Row className="align-items-center">
-                    <Col xs="10">
-                    </Col>
-                    
-                    <Col className="text-right" xs="2">
-                      <Button
-                        color="primary"
-                        onClick={this.handleEditButtonClick}
-                        size="sm"
-                        disabled={this.state.editing}
+
+                  <Col className="text-right" lg="12">
+                    <Button
+                        color="secondary"
+                        onClick={this.handleCancelButtonClick}
                       >
-                        { this.state.editing === true && "Editing..."}{this.state.editing === false && "Edit"}
+                        Cancel
                       </Button>
-                    </Col>
+                      < Button
+                        color="primary"
+                        onClick={this.handleSubmit}
+                      >
+                        Save
+                      </Button>
+                      </Col>
                   </Row>
                 </CardHeader>
                 <CardBody>
@@ -259,7 +216,6 @@ class Person extends React.Component {
                               value={this.state.person.firstName || ''}
                               id="input-first-name"
                               type="text"
-                              readOnly={!this.state.editing}
                               autoComplete="zzz"
                             />
                           </FormGroup>
@@ -279,7 +235,6 @@ class Person extends React.Component {
                               value={this.state.person.middleName || ''}
                               id="input-middle-name"
                               type="text"
-                              readOnly={!this.state.editing}
                               autoComplete="zzz"
                             />
                           </FormGroup>
@@ -299,7 +254,6 @@ class Person extends React.Component {
                               onChange={this.handlePersonInfoChange}
                               id="input-last-name"
                               type="text"
-                              readOnly={!this.state.editing}
                               autoComplete="zzz"
                             />
                           </FormGroup>
@@ -313,8 +267,8 @@ class Person extends React.Component {
                               Gender
                             </label>
                             <select className="form-control" value={('' + this.state.person.gender).toUpperCase()}
-                               id="input-gender" disabled={!this.state.editing}
-                               readOnly={!this.state.editing} onChange={this.handleGenderChange}>
+                               id="input-gender"
+                               onChange={this.handleGenderChange}>
                               {(this.state.person.gender == null || this.state.person.gender == undefined) && <option value=''></option>}
                               <option value="MALE">male</option>
                               <option value="FEMALE">female</option>
@@ -332,7 +286,6 @@ class Person extends React.Component {
                             </label>
                             <DatePicker
                               className="form-control"
-                              disabled={!this.state.editing}
                               value={this.state.person.dateOfBirth != null ? (new Date(this.state.person.dateOfBirth) || '') : ''}
                               maxDate={new Date()}
                               format="dd/MM/yyyy"
@@ -354,8 +307,8 @@ class Person extends React.Component {
                               value={" " + calculateAge(this.state.person.dateOfBirth)}
                               id="input-age"
                               type="text"
-                              readOnly={true}
                               autoComplete="zzz"
+                              readOnly={true}
                             />
                           </FormGroup>
                         </Col>
@@ -383,7 +336,6 @@ class Person extends React.Component {
                             onChange={this.handlePersonInfoChange}
                             value={this.state.person.email != null ? (this.state.person.email || '') : ''}
                             type="email"
-                            readOnly={!this.state.editing}
                             autoComplete="zzz"
                             />
                         </FormGroup>
@@ -403,7 +355,6 @@ class Person extends React.Component {
                             id="input-tel-mobile"
                             value={this.state.person.mobileNumber != null ? (this.state.person.mobileNumber || '') : ''}
                             type="tel"
-                            readOnly={!this.state.editing}
                             autoComplete="zzz"
                             />
                         </FormGroup>
@@ -423,7 +374,6 @@ class Person extends React.Component {
                             onChange={this.handlePersonInfoChange}
                             value={this.state.person.homeNumber != null ? (this.state.person.homeNumber || '') : ''}
                             type="tel"
-                            readOnly={!this.state.editing}
                             autoComplete="zzz"
                             />
                         </FormGroup>
@@ -451,7 +401,6 @@ class Person extends React.Component {
                               id="input-address-street-number"
                               value={this.state.person.homeAddress != null ? (this.state.person.homeAddress.streetNumber || '') : ''}
                               type="text"
-                              readOnly={!this.state.editing}
                               autoComplete="zzz"
                             />
                           </FormGroup>
@@ -471,7 +420,6 @@ class Person extends React.Component {
                               id="input-address-street"
                               value={this.state.person.homeAddress != null ? (this.state.person.homeAddress.street || '') : ''}
                               type="text"
-                              readOnly={!this.state.editing}
                               autoComplete="zzz"
                             />
                           </FormGroup>
@@ -491,7 +439,6 @@ class Person extends React.Component {
                               id="input-address-suburb"
                               value={this.state.person.homeAddress != null ? (this.state.person.homeAddress.suburb || '') : ''}
                               type="text"
-                              readOnly={!this.state.editing}
                               autoComplete="zzz"
                             />
                           </FormGroup>
@@ -513,7 +460,6 @@ class Person extends React.Component {
                               onChange={this.handleAddressInfoChange}
                               id="input-address-unit-number"
                               type="text"
-                              readOnly={!this.state.editing}
                               autoComplete="zzz"
                             />
                           </FormGroup>
@@ -533,7 +479,6 @@ class Person extends React.Component {
                               id="input-address-complex"
                               value={this.state.person.homeAddress != null ? (this.state.person.homeAddress.complex || '') : ''}
                               type="text"
-                              readOnly={!this.state.editing}
                               autoComplete="zzz"
                             />
                           </FormGroup>
@@ -554,7 +499,6 @@ class Person extends React.Component {
                               onChange={this.handleAddressInfoChange}
                               id="input-city"
                               value={this.state.person.homeAddress != null ? (this.state.person.homeAddress.city || '') : ''}
-                              readOnly={!this.state.editing}
                               autoComplete="zzz"
                             />
                           </FormGroup>
@@ -574,7 +518,6 @@ class Person extends React.Component {
                               name="province"
                               id="input-province"
                               type="text"
-                              readOnly={!this.state.editing}
                               autoComplete="zzz"
                             />
                           </FormGroup>
@@ -594,7 +537,6 @@ class Person extends React.Component {
                               name="country"
                               id="input-country"
                               type="text"
-                              readOnly={!this.state.editing}
                               autoComplete="zzz"
                             />
                           </FormGroup>
@@ -614,7 +556,6 @@ class Person extends React.Component {
                               onChange={this.handleAddressInfoChange}
                               id="input-postal-code"
                               type="text"
-                              readOnly={!this.state.editing}
                               autoComplete="zzz"
                             />
                           </FormGroup>
@@ -626,14 +567,12 @@ class Person extends React.Component {
                     <Button
                         color="secondary"
                         onClick={this.handleCancelButtonClick}
-                        hidden={!this.state.editing}
                       >
                         Cancel
                       </Button>
                       < Button
                         color="primary"
                         onClick={this.handleSubmit}
-                        hidden={!this.state.editing}
                       >
                         Save
                       </Button>
@@ -735,4 +674,4 @@ class Person extends React.Component {
   }
 }
 
-export default Person
+export default AddPerson
