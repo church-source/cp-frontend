@@ -10,6 +10,27 @@ import {
 
 class People extends React.Component {
 
+
+constructor(props){
+  super(props)
+  this.state = {
+    peopleForCurrentPage: [],
+    dataReady: false,
+    currentPage: 0
+  }
+}
+
+componentWillReceiveProps() {
+  console.log(this.props);
+  console.log((this.props.currentPage+1)*this.props.peoplePerPage);
+  let end = Math.min(((this.props.currentPage)*this.props.peoplePerPage), this.props.people.length)
+  console.log('start:' + this.props.currentPage)
+  console.log('end: ' + end)
+  this.setState({ peopleForCurrentPage: this.props.people.slice(((this.props.currentPage-1)*this.props.peoplePerPage), end) })
+  this.setState({ currentPage: this.props.currentPage})
+  console.log('got here sadd')
+}
+
 render () {
     return (
           <Table className="align-items-center table-flush" responsive>
@@ -22,8 +43,8 @@ render () {
               </tr>
             </thead>
             <tbody>
-                      
-            { this.props.people.map((person) => (
+              {
+              this.state.peopleForCurrentPage.map((person) => (
                             <tr key={person.id}> 
                             <td>
                                 <div className="avatar-group">
@@ -51,7 +72,8 @@ render () {
                               </td>
                               <td><div>                                  
                                 <a href={"/admin/person/" + person.id} id="tooltip742438047"
-                                  >{person.firstName} {person.lastName}</a>
+                                  >{person.firstName} {person.lastName}
+                                </a>
                                   </div></td>
                               
                               <td>{person.dateOfBirth}</td>

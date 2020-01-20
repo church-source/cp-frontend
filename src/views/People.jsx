@@ -21,6 +21,10 @@ import People from "../components/People/People.jsx"
 import {
   Card,
   CardHeader,
+  CardFooter,
+  Pagination,
+  PaginationItem,
+  PaginationLink,
   Col,
   Container,
   Row
@@ -31,7 +35,10 @@ import Header from "components/Headers/Header.jsx";
 
 class PeopleView extends React.Component {
   state = {
-    people: []
+    people: [],
+    currentPageNumber: 1,
+    totalPageCount: 0,
+    dataFetched: false
   }
 
   componentDidMount() {
@@ -45,14 +52,19 @@ class PeopleView extends React.Component {
     fetch('http://' + process.env.REACT_APP_API_URL + ':'+ process.env.REACT_APP_API_PORT + '/people',{method:'GET', headers: headers})
     .then(res => res.json())
     .then((data) => {
-      console.log(data);
       this.setState({ people: data })
+      this.setState({ dataFetched: true })
+      let tpC= Math.floor((data.length/10) + 1);
+      this.setState({ totalPageCount: tpC})
     })
     .catch(console.log)
   }
 
+  
+
   render() {
     return (
+      
       <>
         <Header />
 
@@ -74,7 +86,54 @@ class PeopleView extends React.Component {
                   </Col>
                 </Row>
               </CardHeader>
-              <People people={this.state.people} />
+              {this.state.dataFetched && <People people={this.state.people} currentPage={this.state.currentPageNumber} peoplePerPage={10}/>}
+              <CardFooter className="py-4">
+                  <nav aria-label="...">
+                  <Pagination
+                        className="pagination justify-content-end mb-0"
+                        listClassName="justify-content-end mb-0"
+                      >
+
+                        <PaginationItem className={this.state.currentPageNumber===1 ? "disabled" : ""}>
+                        
+                        
+                          <PaginationLink
+                            href="#pablo"
+                            onClick={() => { this.setState({ currentPageNumber: this.state.currentPageNumber-1}) }}
+                            tabIndex="-1"
+                          >
+                            <i className="fas fa-angle-left" />
+                              
+                            <span className="sr-only">Previous</span>
+
+                          </PaginationLink>
+                        </PaginationItem>
+                            {Array.from(Array(this.state.totalPageCount), (e, i) => {
+                              let cn = "pageLink"
+                              if(this.state.currentPageNumber === (i+1)) {
+                                cn = "active";
+                              }
+                              return <PaginationItem className={cn}>
+                              <PaginationLink
+                                href="#pablo"
+                                onClick={() => { this.setState({ currentPageNumber: (i+1)}) }}
+                              >
+                              {i+1} {this.state.currentPageNumber === (i+1) && <span className="sr-only">(current)</span>}
+                              </PaginationLink>
+                            </PaginationItem>
+                            })}
+                            <PaginationItem className={this.state.currentPageNumber===this.state.totalPageCount ? "disabled" : ""}>
+                            <PaginationLink
+                              href="#pablo"
+                              onClick={() => { this.setState({ currentPageNumber: this.state.currentPageNumber+1}) }}
+                            >
+                              <i className="fas fa-angle-right" />
+                              <span className="sr-only">Next</span>
+                            </PaginationLink>
+                          </PaginationItem>
+                        </Pagination>
+                  </nav>
+                </CardFooter>
             </Card>
           </div>
           </Row>
