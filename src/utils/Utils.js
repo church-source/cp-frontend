@@ -38,4 +38,9 @@ function daydiff(first, second) {
     // Round to nearest whole number to deal with DST.
     return Math.round((second-first)/(1000*60*60*24))
 }
-   
+
+export const adjustForTimezone = (date) => {
+    var timeOffsetInMS = date.getTimezoneOffset() * 60000;
+    date.setTime(date.getTime() - timeOffsetInMS);
+    return date
+}

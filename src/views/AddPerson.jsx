@@ -16,7 +16,7 @@
 
 */
 import React, { Component } from 'react'
-import {calculateAge} from '../utils/Utils.js'
+import {calculateAge, adjustForTimezone} from '../utils/Utils.js'
 import DatePicker from 'react-date-picker'
 import clonedeep from 'lodash.clonedeep'
 
@@ -119,7 +119,7 @@ class AddPerson extends React.Component {
   handleBirthDatePickerChange = date => {
     this.setState((prevState) => {
       let person = Object.assign({}, prevState.person)
-      person['dateOfBirth'] = date
+      person['dateOfBirth'] = adjustForTimezone(date)
       return { person }
     })
   }
@@ -149,7 +149,7 @@ class AddPerson extends React.Component {
                   <Col className="order-lg-2" lg="2">
                     <div className="card-profile-image">
                       <a href="#pablo" onClick={e => e.preventDefault()}>
-                      { this.state.person.gender === "FEMALE" && 
+                                    { this.state.person.gender === "FEMALE" && 
                                     <img
                                       alt="..."
                                       className="rounded-circle"

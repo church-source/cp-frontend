@@ -16,7 +16,7 @@
 
 */
 import React, { Component } from 'react'
-import {calculateAge} from '../utils/Utils.js'
+import {calculateAge, adjustForTimezone} from '../utils/Utils.js'
 import DatePicker from 'react-date-picker'
 import clonedeep from 'lodash.clonedeep'
 
@@ -135,7 +135,7 @@ class ViewEditPerson extends React.Component {
   handleBirthDatePickerChange = date => {
     this.setState((prevState) => {
       let person = Object.assign({}, prevState.person)
-      person['dateOfBirth'] = date
+      person['dateOfBirth'] = adjustForTimezone(date);
       return { person }
     })
   }
@@ -448,6 +448,48 @@ class ViewEditPerson extends React.Component {
                       </h6>
                       <div className="pl-lg-4">
                       <Row>
+                      <Col md="3">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-address-unit-number"
+                            >
+                              Unit Number (if applicable)
+                            </label>
+                            <Input
+                              className="form-control"
+                              value={this.state.person.homeAddress != null ? (this.state.person.homeAddress.unitNumber || '') : ''}
+                              name="unitNumber"
+                              onChange={this.handleAddressInfoChange}
+                              id="input-address-unit-number"
+                              type="text"
+                              readOnly={!this.state.editing}
+                              autoComplete="zzz"
+                            />
+                          </FormGroup>
+                        </Col>
+                        <Col md="6">
+                          <FormGroup>
+                            <label
+                              className="form-control-label"
+                              htmlFor="input-address-complex"
+                            >
+                              Complex (if applicable)
+                            </label>
+                            <Input
+                              className="form-control"
+                              name="complex"
+                              onChange={this.handleAddressInfoChange}
+                              id="input-address-complex"
+                              value={this.state.person.homeAddress != null ? (this.state.person.homeAddress.complex || '') : ''}
+                              type="text"
+                              readOnly={!this.state.editing}
+                              autoComplete="zzz"
+                            />
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                      <Row>
                         <Col md="2">
                           <FormGroup>
                             <label
@@ -508,48 +550,6 @@ class ViewEditPerson extends React.Component {
                             />
                           </FormGroup>
                           </Col>
-                      </Row>
-                      <Row>
-                      <Col md="3">
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-address-unit-number"
-                            >
-                              Unit Number (if applicable)
-                            </label>
-                            <Input
-                              className="form-control"
-                              value={this.state.person.homeAddress != null ? (this.state.person.homeAddress.unitNumber || '') : ''}
-                              name="unitNumber"
-                              onChange={this.handleAddressInfoChange}
-                              id="input-address-unit-number"
-                              type="text"
-                              readOnly={!this.state.editing}
-                              autoComplete="zzz"
-                            />
-                          </FormGroup>
-                        </Col>
-                        <Col md="6">
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-address-complex"
-                            >
-                              Complex (if applicable)
-                            </label>
-                            <Input
-                              className="form-control"
-                              name="complex"
-                              onChange={this.handleAddressInfoChange}
-                              id="input-address-complex"
-                              value={this.state.person.homeAddress != null ? (this.state.person.homeAddress.complex || '') : ''}
-                              type="text"
-                              readOnly={!this.state.editing}
-                              autoComplete="zzz"
-                            />
-                          </FormGroup>
-                        </Col>
                       </Row>
                       <Row>
                         <Col lg="4">
