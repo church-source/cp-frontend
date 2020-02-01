@@ -14,21 +14,13 @@ class People extends React.Component {
 constructor(props){
   super(props)
   this.state = {
-    peopleForCurrentPage: [],
-    dataReady: false,
-    currentPage: 0
+    peopleForCurrentPage: []
   }
 }
 
 componentWillReceiveProps() {
-  console.log(this.props);
-  console.log((this.props.currentPage+1)*this.props.peoplePerPage);
-  let end = Math.min(((this.props.currentPage)*this.props.peoplePerPage), this.props.people.length)
-  console.log('start:' + this.props.currentPage)
-  console.log('end: ' + end)
-  this.setState({ peopleForCurrentPage: this.props.people.slice(((this.props.currentPage-1)*this.props.peoplePerPage), end) })
-  this.setState({ currentPage: this.props.currentPage})
-  console.log('got here sadd')
+  let end = Math.min(((this.props.currentPageNumber)*this.props.peoplePerPage), this.props.people.length)
+  this.setState({ peopleForCurrentPage: this.props.people.slice(((this.props.currentPageNumber-1)*this.props.peoplePerPage), end) })
 }
 
 render () {

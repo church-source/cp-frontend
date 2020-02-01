@@ -34,11 +34,34 @@ import {
 import Header from "components/Headers/Header.jsx";
 
 class PeopleView extends React.Component {
-  state = {
-    people: [],
-    currentPageNumber: 1,
-    totalPageCount: 0,
-    dataFetched: false
+  constructor(){
+    super()
+    this.state = {
+      people: [],
+      currentPageNumber: 1,
+      totalPageCount: 0,
+      dataFetched: false
+    }
+    this.handlePageDecrement = this.handlePageDecrement.bind(this)
+    this.handlePageIncrement = this.handlePageIncrement.bind(this)
+    this.handlePageSet = this.handlePageSet.bind(this)
+
+
+  }
+
+  handlePageDecrement(event) {
+    let newCurrentPage =  (this.state.currentPageNumber-1)
+    this.setState({currentPageNumber: newCurrentPage}, () => {this.forceUpdate()})
+  }
+
+  handlePageIncrement(event) {
+    let newCurrentPage =  (this.state.currentPageNumber+1)
+    this.setState({currentPageNumber: newCurrentPage}, () => {this.forceUpdate()})
+  }
+
+  handlePageSet(event) {
+    let newCurrentPage =  parseInt(event.target.innerHTML)
+    this.setState({currentPageNumber: newCurrentPage}, () => {this.forceUpdate()})
   }
 
   componentDidMount() {
@@ -59,8 +82,6 @@ class PeopleView extends React.Component {
     })
     .catch(console.log)
   }
-
-  
 
   render() {
     return (
@@ -86,7 +107,7 @@ class PeopleView extends React.Component {
                   </Col>
                 </Row>
               </CardHeader>
-              {this.state.dataFetched && <People people={this.state.people} currentPage={this.state.currentPageNumber} peoplePerPage={10}/>}
+              {this.state.dataFetched && <People people={this.state.people} currentPageNumber={this.state.currentPageNumber} peoplePerPage={10}/>}
               <CardFooter className="py-4">
                   <nav aria-label="...">
                   <Pagination
@@ -98,8 +119,7 @@ class PeopleView extends React.Component {
                         
                         
                           <PaginationLink
-                            href="#pablo"
-                            onClick={() => { this.setState({ currentPageNumber: this.state.currentPageNumber-1}) }}
+                            onClick={this.handlePageDecrement}
                             tabIndex="-1"
                           >
                             <i className="fas fa-angle-left" />
@@ -113,10 +133,10 @@ class PeopleView extends React.Component {
                               if(this.state.currentPageNumber === (i+1)) {
                                 cn = "active";
                               }
-                              return <PaginationItem className={cn}>
+                              return <PaginationItem key={'paginator-' + i} className={cn}>
                               <PaginationLink
-                                href="#pablo"
-                                onClick={() => { this.setState({ currentPageNumber: (i+1)}) }}
+                                key={i}
+                                onClick={this.handlePageSet}
                               >
                               {i+1} {this.state.currentPageNumber === (i+1) && <span className="sr-only">(current)</span>}
                               </PaginationLink>
@@ -124,8 +144,7 @@ class PeopleView extends React.Component {
                             })}
                             <PaginationItem className={this.state.currentPageNumber===this.state.totalPageCount ? "disabled" : ""}>
                             <PaginationLink
-                              href="#pablo"
-                              onClick={() => { this.setState({ currentPageNumber: this.state.currentPageNumber+1}) }}
+                              onClick={this.handlePageIncrement}
                             >
                               <i className="fas fa-angle-right" />
                               <span className="sr-only">Next</span>
