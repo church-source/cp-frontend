@@ -304,7 +304,7 @@ class AddPerson extends React.Component {
                               Age
                             </label>
                             <Input
-                              value={" " + calculateAge(this.state.person.dateOfBirth)}
+                              value={this.state.person.dateOfBirth != null ? ' ' + calculateAge(this.state.person.dateOfBirth) : ''}
                               id="input-age"
                               type="text"
                               autoComplete="zzz"
