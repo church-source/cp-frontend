@@ -5,10 +5,8 @@ export const calculateAge = (birthday) => {
     let ageDate = new Date(ageDifMs) // miliseconds from epoch
     let ageYears = Math.abs(ageDate.getUTCFullYear() - 1970)
     if(ageYears === 0) {
-        let ageMonths = monthDiff(birthDate, new Date())
-        if(ageMonths === 0) {
-            let ageDays = daydiff(birthDate, new Date())
-
+        let ageDays = daydiff(birthDate, new Date()) - 1
+        if(ageDays <= 31) {
             if(ageDays === 0) {
                 return "newborn"
             } else if (ageDays === 1) {
@@ -16,7 +14,9 @@ export const calculateAge = (birthday) => {
             } else {
                 return ageDays + " days"
             }
-        } else if (ageMonths === 1) {
+        }
+        let ageMonths = monthDiff(birthDate, new Date()) - 1
+        if (ageMonths === 1) {
             return ageMonths + " month"
         } else {
             return ageMonths + " months"
