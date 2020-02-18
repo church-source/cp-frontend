@@ -46,7 +46,7 @@ class Login extends React.Component {
       showSuccessMessage: false
     }
     this.handleChange = this.handleChange.bind(this)
-    this.loginClicked = this.loginClicked.bind(this)
+    this.onFormSubmit = this.onFormSubmit.bind(this)
   }
 
 
@@ -59,7 +59,8 @@ class Login extends React.Component {
     )
   }
 
-  loginClicked() {
+  onFormSubmit(event) {
+    event.preventDefault();
     AuthenticationService
     .executeBasicAuthenticationService(this.state.username, this.state.password)
     .then(() => {
@@ -120,7 +121,7 @@ class Login extends React.Component {
               <div className="text-center text-muted mb-4">
                 <small>Or sign in with credentials</small>
               </div>
-              <Form role="form">
+              <Form role="form" onSubmit={this.onFormSubmit}>
                 <FormGroup className="mb-3">
                   <InputGroup className="input-group-alternative">
                     <InputGroupAddon addonType="prepend">
@@ -128,7 +129,7 @@ class Login extends React.Component {
                         <i className="ni ni-email-83" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="Email" type="email" name="username" value={this.state.username} onChange={this.handleChange} />
+                    <Input placeholder="username" type="text" name="username" value={this.state.username} onChange={this.handleChange} />
                   </InputGroup>
                 </FormGroup>
                 <FormGroup>
@@ -155,7 +156,7 @@ class Login extends React.Component {
                   </label>
                 </div>
                 <div className="text-center">
-                  <Button className="my-4" color="primary" onClick={this.loginClicked} type="button">
+                  <Button className="my-4" color="primary" type="submit">
                     Sign in
                   </Button>
                 </div>
