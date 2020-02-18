@@ -24,6 +24,14 @@ import ViewEditPerson from "views/ViewEditPerson.jsx";
 
 var routes = [
   {
+    path: "/login",
+    name: "Login",
+    sidebar: false,
+    icon: "ni ni-tv-2 text-primary",
+    component: Login,
+    layout: "/auth"
+  },
+  {
     path: "/index",
     name: "Dashboard",
     sidebar: true,

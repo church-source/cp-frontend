@@ -33,10 +33,50 @@ import {
   Col
 } from "reactstrap";
 
+import AuthenticationService from '../service/AuthenticationService'
+
 class Login extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      username: '',
+      password: '',
+      hasLoginFailed: false,
+      showSuccessMessage: false
+    }
+    this.handleChange = this.handleChange.bind(this)
+    this.loginClicked = this.loginClicked.bind(this)
+  }
+
+
+  handleChange(event) {
+    this.setState(
+      {
+        [event.target.name]
+          : event.target.value
+      }
+    )
+  }
+
+  loginClicked() {
+    AuthenticationService
+    .executeBasicAuthenticationService(this.state.username, this.state.password)
+    .then(() => {
+        AuthenticationService.registerSuccessfulLogin(this.state.username, this.state.password)
+        this.props.history.push('/admin/index')
+    }).catch(() => {
+        this.setState({ showSuccessMessage: false })
+        this.setState({ hasLoginFailed: true })
+    })
+  }
+
   render() {
     return (
       <>
+        {
+          (this.state.hasLoginFailed) && <div className="container"><div className="alert alert-warning">Invalid Credentials</div></div>
+        }
         <Col lg="5" md="7">
           <Card className="bg-secondary shadow border-0">
             <CardHeader className="bg-transparent pb-5">
@@ -48,20 +88,22 @@ class Login extends React.Component {
                   className="btn-neutral btn-icon"
                   color="default"
                   href="#pablo"
+                  disabled="true"
                   onClick={e => e.preventDefault()}
                 >
                   <span className="btn-inner--icon">
                     <img
                       alt="..."
-                      src={require("assets/img/icons/common/github.svg")}
+                      src={require("assets/img/icons/common/facebook.svg")}
                     />
                   </span>
-                  <span className="btn-inner--text">Github</span>
+                  <span className="btn-inner--text">Facebook</span>
                 </Button>
                 <Button
                   className="btn-neutral btn-icon"
                   color="default"
                   href="#pablo"
+                  disabled="true"
                   onClick={e => e.preventDefault()}
                 >
                   <span className="btn-inner--icon">
@@ -86,7 +128,7 @@ class Login extends React.Component {
                         <i className="ni ni-email-83" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="Email" type="email" />
+                    <Input placeholder="Email" type="email" name="username" value={this.state.username} onChange={this.handleChange} />
                   </InputGroup>
                 </FormGroup>
                 <FormGroup>
@@ -96,7 +138,7 @@ class Login extends React.Component {
                         <i className="ni ni-lock-circle-open" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="Password" type="password" />
+                    <Input placeholder="Password" type="password" name="password" value={this.state.password} onChange={this.handleChange} />
                   </InputGroup>
                 </FormGroup>
                 <div className="custom-control custom-control-alternative custom-checkbox">
@@ -113,7 +155,7 @@ class Login extends React.Component {
                   </label>
                 </div>
                 <div className="text-center">
-                  <Button className="my-4" color="primary" type="button">
+                  <Button className="my-4" color="primary" onClick={this.loginClicked} type="button">
                     Sign in
                   </Button>
                 </div>

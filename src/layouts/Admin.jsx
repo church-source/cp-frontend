@@ -23,6 +23,7 @@ import { Container } from "reactstrap";
 import AdminNavbar from "components/Navbars/AdminNavbar.jsx";
 import AdminFooter from "components/Footers/AdminFooter.jsx";
 import Sidebar from "components/Sidebar/Sidebar.jsx";
+import AuthenticatedRoute from '../service/AuthenticatedRoute.jsx';
 
 import routes from "routes.js";
 
@@ -36,7 +37,7 @@ class Admin extends React.Component {
     return routes.map((prop, key) => {
       if (prop.layout === "/admin") {
         return (
-          <Route
+          <AuthenticatedRoute
             path={prop.layout + prop.path}
             component={prop.component}
             key={key}
