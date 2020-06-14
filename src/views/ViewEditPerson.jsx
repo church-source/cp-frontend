@@ -22,6 +22,8 @@ import clonedeep from 'lodash.clonedeep'
 
 import "../assets/css/react-datepicker.css"
 
+import api from '../service/api'
+
 // reactstrap components
 import {
   Button,
@@ -66,26 +68,13 @@ class ViewEditPerson extends React.Component {
     }))
     event.preventDefault();
 
-    let base64 = require('base-64')
-
-    let username = 'admin'
-    let password = 'password'
-    let headers = new Headers()
-    headers.set('Authorization', 'Basic ' + base64.encode(username + ":" + password))
-    headers.set('Accept', 'application/json');
-    headers.set('Content-Type', 'application/json');
-
     const clonedState = clonedeep(this.state.person)
     clonedState.dateOfBirth = new Date(this.state.person.dateOfBirth)
-    fetch('http://' + process.env.REACT_APP_API_URL + ':'+ process.env.REACT_APP_API_PORT + '/people/' + this.state.person.id,{
-        method: "PUT",
-        body: JSON.stringify(clonedState),
-        headers: headers
-      }).then(response => {
-        response.json().then(data =>{
-          console.log("Successful" + data);
-          this.initializeStateFromInitialData(data);
-        })
+    api.put('/people/' + this.state.person.id,
+      clonedState
+    ).then(response => {
+          console.log("Successful" + response.data);
+          this.initializeStateFromInitialData(response.data);
     })
   }
 
@@ -175,20 +164,13 @@ class ViewEditPerson extends React.Component {
 
   componentDidMount() {
 
-    let base64 = require('base-64')
-
-    let username = 'admin'
-    let password = 'password'
-    let headers = new Headers()
-    headers.set('Authorization', 'Basic ' + base64.encode(username + ":" + password))
-
     const {match} = this.props
     const id = match.params.id
-
-    fetch('http://' + process.env.REACT_APP_API_URL + ':'+ process.env.REACT_APP_API_PORT + '/people/' + id,{method:'GET', headers: headers})
-    .then(res => res.json())
+    console.log('got here Component Did Mount')
+    api.get('/people/' + id)
     .then((data) => {
-      this.initializeStateFromInitialData(data)
+      console.log('got here getting details')
+      this.initializeStateFromInitialData(data.data)
     })
     .catch(console.log)
   }

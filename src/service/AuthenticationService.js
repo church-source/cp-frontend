@@ -1,19 +1,25 @@
+//import api from './api'
 import axios from 'axios'
 
 const API_URL = 'http://' + process.env.REACT_APP_API_URL + ':' + process.env.REACT_APP_API_PORT
+const api =  axios.create({baseURL:API_URL, 
+    headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+}})
 
 export const USER_NAME_SESSION_ATTRIBUTE_NAME = 'authenticatedUser'
+export const USER_ACCESS_TOKEN_ATTRIBUTE_NAME = 'accessToken'
 
 class AuthenticationService {
 
     executeBasicAuthenticationService(username, password) {
-        return axios.get(`${API_URL}/basicauth`,
+        return api.get(`basicauth`,
             { headers: { authorization: this.createBasicAuthToken(username, password) } })
     }
 
     executeJwtAuthenticationService(username, password) {
-        console.log(username);
-        return axios.post(`${API_URL}/authenticate`, {
+        return api.post(`authenticate`, {
             username,
             password
         })
@@ -24,15 +30,14 @@ class AuthenticationService {
     }
 
     registerSuccessfulLogin(username, password) {
-        //let basicAuthHeader = 'Basic ' +  window.btoa(username + ":" + password)
-        //console.log('registerSuccessfulLogin')
         sessionStorage.setItem(USER_NAME_SESSION_ATTRIBUTE_NAME, username)
-        this.setupAxiosInterceptors(this.createBasicAuthToken(username, password))
+        this.setupAxiosInterceptorsForBasicAuth(this.createBasicAuthToken(username, password))
     }
 
     registerSuccessfulLoginForJwt(username, token) {
         sessionStorage.setItem(USER_NAME_SESSION_ATTRIBUTE_NAME, username)
-        this.setupAxiosInterceptors(this.createJWTToken(token))
+        sessionStorage.setItem(USER_ACCESS_TOKEN_ATTRIBUTE_NAME, token)
+        this.setupAxiosInterceptorsForJWTAuth(api)
     }
 
     createJWTToken(token) {
@@ -42,6 +47,8 @@ class AuthenticationService {
 
     logout() {
         sessionStorage.removeItem(USER_NAME_SESSION_ATTRIBUTE_NAME);
+        sessionStorage.removeItem(USER_ACCESS_TOKEN_ATTRIBUTE_NAME)
+
     }
 
     isUserLoggedIn() {
@@ -56,10 +63,24 @@ class AuthenticationService {
         return user
     }
 
-    setupAxiosInterceptors(token) {
-        axios.interceptors.request.use(
-            (config) => {
-                if (this.isUserLoggedIn()) {
+    setupAxiosInterceptorsForJWTAuth(api) {
+        api.interceptors.request.use(
+           function(config) {
+                let user = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME)
+                let token = sessionStorage.getItem(USER_ACCESS_TOKEN_ATTRIBUTE_NAME)
+                if (user !== null) {
+                    config.headers.authorization = 'Bearer ' + token
+                }
+                return config
+            }
+        )
+    }
+
+    setupAxiosInterceptorsForBasicAuth(token) {
+        api.interceptors.request.use(
+           function(config) {
+                let user = sessionStorage.getItem(USER_NAME_SESSION_ATTRIBUTE_NAME)
+                if (user !== null) {
                     config.headers.authorization = token
                 }
                 return config

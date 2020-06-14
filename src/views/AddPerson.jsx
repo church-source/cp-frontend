@@ -39,6 +39,8 @@ import {
 // core components
 import UserHeader from "components/Headers/UserHeader.jsx"
 
+import api from '../service/api'
+
 class AddPerson extends React.Component {
   constructor(){
     super()
@@ -63,26 +65,14 @@ class AddPerson extends React.Component {
     }))
     event.preventDefault();
 
-    let base64 = require('base-64')
-
-    let username = 'admin'
-    let password = 'password'
-    let headers = new Headers()
-    headers.set('Authorization', 'Basic ' + base64.encode(username + ":" + password))
-    headers.set('Accept', 'application/json');
-    headers.set('Content-Type', 'application/json');
-
     const clonedState = clonedeep(this.state.person)
     clonedState.dateOfBirth = new Date(this.state.person.dateOfBirth)
-    fetch('http://' + process.env.REACT_APP_API_URL + ':'+ process.env.REACT_APP_API_PORT + '/people',{
-        method: "POST",
-        body: JSON.stringify(clonedState),
-        headers: headers
-      }).then(response => {
-        response.json().then(data =>{
-          console.log("Successful" + data);
-          document.location = "person/" + data.id;
-        })
+
+    api.post('/people',
+      clonedState
+    ).then(response => {
+          console.log("Successful" + response.data);
+          document.location = "person/" + response.data.id;
     })
   }
 

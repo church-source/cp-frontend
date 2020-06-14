@@ -15,7 +15,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import React from "react";
+import React from "react"
 import People from "../components/People/People.jsx"
 // reactstrap components
 import {
@@ -28,10 +28,12 @@ import {
   Col,
   Container,
   Row
-} from "reactstrap";
+} from "reactstrap"
+
+import Header from "components/Headers/Header.jsx"
+import api from '../service/api'
 
 // core components
-import Header from "components/Headers/Header.jsx";
 
 class PeopleView extends React.Component {
   constructor(){
@@ -45,8 +47,6 @@ class PeopleView extends React.Component {
     this.handlePageDecrement = this.handlePageDecrement.bind(this)
     this.handlePageIncrement = this.handlePageIncrement.bind(this)
     this.handlePageSet = this.handlePageSet.bind(this)
-
-
   }
 
   handlePageDecrement(event) {
@@ -69,15 +69,20 @@ class PeopleView extends React.Component {
 
     let username = 'admin';
     let password = 'password';
-    let headers = new Headers();
-    headers.set('Authorization', 'Basic ' + base64.encode(username + ":" + password));
 
-    fetch('http://' + process.env.REACT_APP_API_URL + ':'+ process.env.REACT_APP_API_PORT + '/people',{method:'GET', headers: headers})
-    .then(res => res.json())
+    api.get('/people')
+    //.then(res => res.json())
     .then((data) => {
-      this.setState({ people: data })
+      console.log(data.data)
+      this.setState({ people: data.data })
       this.setState({ dataFetched: true })
-      let tpC= Math.floor((data.length/10) + 1);
+      let userCountForPagination = data.data.length;
+      // subtract one to fix a small issue. i.e. if there are 20 users, 10 on first page and 
+      // 10 on second page we don't want to display a third page. 
+      if(userCountForPagination > 1)
+        userCountForPagination-=1;
+      
+      let tpC= Math.floor((userCountForPagination/10) + 1)
       this.setState({ totalPageCount: tpC})
     })
     .catch(console.log)

@@ -49,7 +49,6 @@ class Login extends React.Component {
     this.onFormSubmit = this.onFormSubmit.bind(this)
   }
 
-
   handleChange(event) {
     this.setState(
       {
@@ -62,14 +61,15 @@ class Login extends React.Component {
   onFormSubmit(event) {
     event.preventDefault();
     AuthenticationService
-    .executeBasicAuthenticationService(this.state.username, this.state.password)
-    .then(() => {
-        AuthenticationService.registerSuccessfulLogin(this.state.username, this.state.password)
-        this.props.history.push('/admin/index')
-    }).catch(() => {
-        this.setState({ showSuccessMessage: false })
-        this.setState({ hasLoginFailed: true })
-    })
+             .executeJwtAuthenticationService(this.state.username, this.state.password)
+             .then((response) => {
+                 AuthenticationService.registerSuccessfulLoginForJwt(this.state.username, response.data.token)
+                 this.props.history.push('/admin/index')
+             })
+             .catch(() => {
+                 this.setState({ showSuccessMessage: false })
+                 this.setState({ hasLoginFailed: true })
+             })
   }
 
   render() {

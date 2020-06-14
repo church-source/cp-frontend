@@ -8,6 +8,8 @@ import {
   Table
 } from "reactstrap";
 
+import { Link } from 'react-router-dom';
+
 class People extends React.Component {
 
 
@@ -63,9 +65,8 @@ render () {
                                 </div>
                               </td>
                               <td><div>                                  
-                                <a href={"/admin/person/" + person.id} id="tooltip742438047"
-                                  >{person.firstName} {person.lastName}
-                                </a>
+                              <Link to={"/admin/person/" + person.id}>{person.firstName} {person.lastName}
+                                </Link>
                                   </div></td>
                               
                               <td>{person.dateOfBirth}</td>
