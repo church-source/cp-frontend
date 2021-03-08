@@ -58,3 +58,6 @@ typings/
 .next
 
 build
+
+/public/env-config.js
+env-config.js
