@@ -18,7 +18,7 @@ WORKDIR /usr/share/nginx/html
 
 COPY --from=node /usr/src/app/build/ .
 
-COPY ./env.sh .
+COPY ./public/env.sh .
 COPY .env .
 
 # Add bash
