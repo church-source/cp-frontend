@@ -234,7 +234,7 @@ class ViewEditPerson extends React.Component {
                   {/*<Form>*/}
                   <Form autoComplete="zzz" onSubmit="handleSubmit">
                     <h6 className="heading-small text-muted mb-4">
-                      User Info
+                      Personal Info
                     </h6>
                     <div className="pl-lg-4">
                       <Row>

@@ -16,7 +16,7 @@
 
 */
 import React from "react"
-import People from "../components/People/People.jsx"
+import Users from "../components/Users/Users.jsx"
 // reactstrap components
 import {
   Card,
@@ -35,7 +35,7 @@ import api from '../service/api'
 
 // core components
 
-class PeopleView extends React.Component {
+class UsersView extends React.Component {
   constructor(){
     super()
     this.state = {
@@ -67,11 +67,11 @@ class PeopleView extends React.Component {
   componentDidMount() {
     let base64 = require('base-64');
 
-    api.get('/people')
+    api.get('/churchauth/user')
     //.then(res => res.json())
     .then((data) => {
       console.log(data.data)
-      this.setState({ people: data.data })
+      this.setState({ users: data.data })
       this.setState({ dataFetched: true })
       let userCountForPagination = data.data.length;
       // subtract one to fix a small issue. i.e. if there are 20 users, 10 on first page and 
@@ -99,17 +99,17 @@ class PeopleView extends React.Component {
               <CardHeader className="border-0">
                 <Row >
                   <Col sm="8">
-                    <h2 className="mb-0">People</h2>
+                    <h2 className="mb-0">Users</h2>
                   </Col>
                   <Col sm="4" className="text-right">
                                    <div><a
-                                    href={"/admin/person"}
+                                    href={"/admin/users"}
                                     id="tooltip742438047">                  <i className="fas fa-plus fa-2x" />  </a></div>
   
                   </Col>
                 </Row>
               </CardHeader>
-              {this.state.dataFetched && <People people={this.state.people} currentPageNumber={this.state.currentPageNumber} peoplePerPage={10}/>}
+              {this.state.dataFetched && <Users users={this.state.users} currentPageNumber={this.state.currentPageNumber} usersPerPage={10}/>}
               <CardFooter className="py-4">
                   <nav aria-label="...">
                   <Pagination
@@ -165,4 +165,4 @@ class PeopleView extends React.Component {
   }
 }
 
-export default PeopleView;
+export default UsersView;
