@@ -21,8 +21,6 @@ import DatePicker from 'react-date-picker'
 import clonedeep from 'lodash.clonedeep'
 
 import "../assets/css/react-datepicker.css"
-
-import api from '../service/api'
 import Select from 'react-select';
 
 // reactstrap components
@@ -36,26 +34,27 @@ import {
   Input,
   Container,
   Row,
-  Col
+  Col,
+  select
 } from "reactstrap"
 // core components
 import Header from "components/Headers/Header.jsx"
 
-class ViewEditRole extends React.Component {
-  
+import api from '../service/api'
+
+class AddRole extends React.Component {
+
   constructor(){
     super()
 
     //state for characters value//
     this.state = {
       privileges: [],
-      role: {name:"", privileges:[]},
-      editing: false,
+      role: {privileges:[]},
       initialState: {},
       pageHeading: ""
     }  
     this.handleRoleNameChange = this.handleRoleNameChange.bind(this)
-    this.handleEditButtonClick = this.handleEditButtonClick.bind(this)
     this.handleCancelButtonClick = this.handleCancelButtonClick.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleSelect = this.handleSelect.bind(this);
@@ -90,32 +89,14 @@ class ViewEditRole extends React.Component {
       editing: false
     }))
     event.preventDefault();
-    console.log(this.state.role);
+
     const clonedState = clonedeep(this.state.role)
-    api.put('/churchauth/role/' + this.state.role.id,
+
+    api.post('/churchauth/role',
       clonedState
     ).then(response => {
-          console.log("Successful" + response.data);
-          this.initializeStateFromInitialData(response.data);
+      document.location = "role/" + response.data.id;
     })
-  }
-
-  handleEditButtonClick(event) {
-    this.setState(prevState => ({
-      editing: true
-    }))
-  }
-
-  handleCancelButtonClick(event) {
-    this.setState(prevState => ({
-      editing: false
-    }))
-
-    const initialState = clonedeep(this.state.initialState)
-
-    this.setState(prevState => ({
-      role: initialState
-    }))
   }
 
   handleRoleNameChange(event) {
@@ -127,71 +108,48 @@ class ViewEditRole extends React.Component {
     })
   }
 
-  initializeStateFromInitialData = (data) => {
-    const initialData = clonedeep(data)
-    this.setState({ initialState: initialData })
-    this.setState({ role: data })
-    this.setState(prevState => ({
-      pageHeading: data.name
-    }))
+  handleCancelButtonClick(event) {
+    document.location = "roles/";
   }
 
   initializePrivileges = (privileges) => {
     this.setState({ privileges: privileges })
   }
 
-  handleCancelButtonClick(event) {
-    this.setState(prevState => ({
-      editing: false
-    }))
-
-    const initialData = clonedeep(this.state.initialState)
-    this.initializeStateFromInitialData(initialData)
-  }
-
   componentDidMount() {
-
-    const {match} = this.props
-    const id = match.params.id
-
     api.get('/churchauth/privilege') //get all privileges
     .then((data) => {
       this.initializePrivileges(data.data)
     })
-
-    api.get('/churchauth/role/' + id)
-    .then((data) => {
-      this.initializeStateFromInitialData(data.data)
-    })
-
-    
-    .catch(console.log)
   }
  
   render() {
     return (
       <>
-        <Header heading={this.state.pageHeading}/>
+        <Header heading="Adding a New Role..."/>
         {/* Page content */}
         <Container className="mt--7" fluid>
           <Row>
             <Col className="order-xl-1" xl="8">
               <Card className="bg-secondary shadow">
+
                 <CardHeader className="bg-white border-0">
                   <Row className="align-items-center">
-                    <Col xs="10">
-                    </Col>
-                    
-                    <Col className="text-right" xs="2">
-                      <Button
-                        color="primary"
-                        onClick={this.handleEditButtonClick}
-                        size="sm"
-                        disabled={this.state.editing}
+
+                  <Col className="text-right" lg="12">
+                    <Button
+                        color="secondary"
+                        onClick={this.handleCancelButtonClick}
                       >
-                        { this.state.editing === true && "Editing..."}{this.state.editing === false && "Edit"}
+                        Cancel
                       </Button>
-                    </Col>
+                      < Button
+                        color="primary"
+                        onClick={this.handleSubmit}
+                      >
+                        Save
+                      </Button>
+                      </Col>
                   </Row>
                 </CardHeader>
                 <CardBody>
@@ -217,13 +175,13 @@ class ViewEditRole extends React.Component {
                               value={this.state.role.name || ''}
                               id="input-rolename"
                               type="text"
-                              disabled={!this.state.editing}
                               autoComplete="zzz"
                             />
                           </FormGroup>
                         </Col>
                         <Col lg="6"> </Col>
-                        </Row>
+                      </Row>
+                      <hr className="my-4" />
                       <h6 className="heading-small text-muted mb-4">
                         Permissions
                       </h6>
@@ -247,33 +205,30 @@ class ViewEditRole extends React.Component {
                             placeholder={'Select Permissions'}
                             autoFocus={true}
                             menuIsOpen={this.state.menuOpen}
-                            isDisabled={!this.state.editing}
                           />                     
-
                         </FormGroup>
                         </Col>
+                      </div>
                     <hr className="my-4" />
                     <Col className="text-right" lg="12">
                     <Button
                         color="secondary"
                         onClick={this.handleCancelButtonClick}
-                        hidden={!this.state.editing}
                       >
                         Cancel
                       </Button>
                       < Button
                         color="primary"
                         onClick={this.handleSubmit}
-                        hidden={!this.state.editing}
                       >
                         Save
                       </Button>
                       </Col>
-                    </div>
                     </Form>
                 </CardBody>
               </Card>
             </Col>
+
           </Row>
         </Container>
       </>
@@ -281,4 +236,4 @@ class ViewEditRole extends React.Component {
   }
 }
 
-export default ViewEditRole
+export default AddRole

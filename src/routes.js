@@ -23,6 +23,7 @@ import Users from "views/Users.jsx";
 import Roles from "views/Roles.jsx";
 import AddPerson from "views/AddPerson.jsx";
 import AddUser from "views/AddUser.jsx";
+import AddRole from "views/AddRole.jsx";
 import ViewEditPerson from "views/ViewEditPerson.jsx";
 import ViewEditRole from "views/ViewEditRole.jsx";
 import ViewEditUser from "views/ViewEditUser.jsx";
@@ -136,6 +137,15 @@ var routes = [
     settingSidebar: false,
     icon: "ni ni-bullet-list-67 text-red",
     component: ViewEditRole,
+    layout: "/settings"
+  },
+  {
+    path: "/role",
+    name: "Add Role",
+    sidebar: false,
+    settingSidebar: false,
+    icon: "ni ni-bullet-list-67 text-red",
+    component: AddRole,
     layout: "/settings"
   }
 ];

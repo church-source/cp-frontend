@@ -26,8 +26,16 @@ import {
   PaginationLink,
   Col,
   Container,
-  Row
+  Row,
+  Button,
+  CardBody,
+  CardImg,
+  CardTitle,
+  CardText
 } from "reactstrap"
+
+import { Link } from 'react-router-dom';
+
 
 import Header from "components/Headers/Header.jsx"
 import api from '../service/api'
@@ -35,10 +43,17 @@ import api from '../service/api'
 // core components
 
 class Settings extends React.Component {
-  constructor(){
-    super()
+  constructor(props){
+    super(props)
   }
   
+  redirectManageUsers(){
+    this.props.history.push('/settings/users')
+  }
+
+  redirectManageRoles(){
+    this.props.history.push('/settings/roles')
+  }
   render() {
     return (
       
@@ -55,12 +70,56 @@ class Settings extends React.Component {
                   <Col sm="8">
                     <h2 className="mb-0">Settings</h2>
                   </Col>
-                  <Col sm="4" className="text-right">
-                                   <div></div>
-  
+                  <Col sm="4" className="text-left">
+                 
                   </Col>
                 </Row>
+
               </CardHeader>
+
+              <CardBody>
+              <Row>
+              <Col lg="3">
+                <Card style={{ width: "18rem" }}>
+                  <CardBody>
+                    <CardTitle>Manage Users</CardTitle>
+                    <CardText>
+                      Add and edit users
+                    </CardText>
+                    <Link to="/settings/users">
+                      <Button
+                        color="primary"
+                        href="#manageUsers"
+                      // onClick={this.redirectManagePage}
+                      >
+                        Manage Users
+                      </Button>
+                    </Link>
+                  </CardBody>
+                </Card>
+                </Col>
+                <Col lg="3">
+                <Card style={{ width: "18rem" }}>
+                  <CardBody>
+                    <CardTitle>Manage Roles</CardTitle>
+                    <CardText>
+                      Add and edit roles
+                    </CardText>
+                    <Link to="/settings/roles">
+                    <Button
+                      color="primary"
+                      href="#manageRoles"
+                      //onClick={this.redirectManageRoles}
+                    >
+                      Manage Roles
+                    </Button>
+                    </Link>
+                  </CardBody>
+                </Card>
+                </Col>
+                </Row>
+              </CardBody>
+              
               <CardFooter className="py-4">
                   <nav aria-label="...">
                   
