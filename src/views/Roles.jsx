@@ -16,7 +16,7 @@
 
 */
 import React from "react"
-import Users from "../components/Users/Users.jsx"
+import Roles from "../components/Roles/Roles.jsx"
 // reactstrap components
 import {
   Card,
@@ -35,11 +35,11 @@ import api from '../service/api'
 
 // core components
 
-class UsersView extends React.Component {
+class RolesView extends React.Component {
   constructor(){
     super()
     this.state = {
-      users: [],
+      roles: [],
       currentPageNumber: 1,
       totalPageCount: 0,
       dataFetched: false
@@ -67,14 +67,14 @@ class UsersView extends React.Component {
   componentDidMount() {
     let base64 = require('base-64');
 
-    api.get('/churchauth/user')
+    api.get('/churchauth/role')
     //.then(res => res.json())
     .then((data) => {
       console.log(data.data)
-      this.setState({ users: data.data })
+      this.setState({ roles: data.data })
       this.setState({ dataFetched: true })
       let userCountForPagination = data.data.length;
-      // subtract one to fix a small issue. i.e. if there are 20 users, 10 on first page and 
+      // subtract one to fix a small issue. i.e. if there are 20 roles, 10 on first page and 
       // 10 on second page we don't want to display a third page. 
       if(userCountForPagination > 1)
         userCountForPagination-=1;
@@ -99,17 +99,17 @@ class UsersView extends React.Component {
               <CardHeader className="border-0">
                 <Row >
                   <Col sm="8">
-                    <h2 className="mb-0">Users</h2>
+                    <h2 className="mb-0">Roles</h2>
                   </Col>
                   <Col sm="4" className="text-right">
                                    <div><a
-                                    href={"/settings/user"}
+                                    href={"/settings/roles"}
                                     id="tooltip742438047">                  <i className="fas fa-plus fa-2x" />  </a></div>
   
                   </Col>
                 </Row>
               </CardHeader>
-              {this.state.dataFetched && <Users users={this.state.users} currentPageNumber={this.state.currentPageNumber} usersPerPage={10}/>}
+              {this.state.dataFetched && <Roles roles={this.state.roles} currentPageNumber={this.state.currentPageNumber} rolesPerPage={10}/>}
               <CardFooter className="py-4">
                   <nav aria-label="...">
                   <Pagination
@@ -165,4 +165,4 @@ class UsersView extends React.Component {
   }
 }
 
-export default UsersView;
+export default RolesView;

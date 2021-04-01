@@ -42,10 +42,17 @@ class Login extends React.Component {
     this.state = {
       username: '',
       password: '',
+      newPassword: '',
+      newPasswordAgain: '',
+      changePasswordToken: '',
       hasLoginFailed: false,
-      showSuccessMessage: false
+      forcePasswordChange: false,
+      passwordChangeSuccessfully: false,
+      showSuccessMessage: false,
+      changePasswordFailed: false
     }
     this.handleChange = this.handleChange.bind(this)
+    this.handleChangePassword = this.handleChangePassword.bind(this)
     this.onFormSubmit = this.onFormSubmit.bind(this)
   }
 
@@ -58,16 +65,51 @@ class Login extends React.Component {
     )
   }
 
+  handleChangePassword(event) {
+    event.preventDefault();
+    AuthenticationService
+             .executeChangePasswordWithChangePasswordToken(this.state.username, this.state.password, this.state.newPassword, this.state.changePasswordToken)
+             .then((response) => {
+                this.setState({ forcePasswordChange: false })
+                this.setState({ hasLoginFailed: false })
+                this.setState({ changePasswordFailed: false })
+                this.setState({ changePasswordToken: '' })
+                this.setState({ oldPassword: '' })
+                this.setState({ newPassword: '' })
+                this.setState({ password: '' })
+                this.setState({ passwordChangeSuccessfully: true })
+
+                this.props.history.push('/auth/login')
+             })
+             .catch((error) => {
+                 this.setState({ forcePasswordChange: false })
+                 this.setState({ hasLoginFailed: false })
+                 this.setState({ changePasswordFailed: true })
+                 this.setState({ oldPassword: '' })
+                 this.setState({ newPassword: '' })
+                 this.setState({ password: '' })
+                 this.setState({ passwordChangeSuccessfully: false })
+
+             })
+  }
+
   onFormSubmit(event) {
     event.preventDefault();
+    this.setState({ changePasswordFailed: false })
+    this.setState({ passwordChangeSuccessfully: false })
+
     AuthenticationService
              .executeJwtAuthenticationService(this.state.username, this.state.password)
              .then((response) => {
                  AuthenticationService.registerSuccessfulLoginForJwt(this.state.username, response.data.token)
                  this.props.history.push('/admin/index')
              })
-             .catch(() => {
+             .catch((error) => {
                  this.setState({ showSuccessMessage: false })
+                 if(error.response.data.reason == "passwordExpired") {
+                  this.setState({ forcePasswordChange: true })
+                  this.setState({ changePasswordToken: error.response.data.changePasswordToken })
+                 }
                  this.setState({ hasLoginFailed: true })
              })
   }
@@ -76,11 +118,20 @@ class Login extends React.Component {
     return (
       <>
         {
-          (this.state.hasLoginFailed) && <div className="container"><div className="alert alert-warning">Invalid Credentials</div></div>
+          (this.state.hasLoginFailed && !this.state.forcePasswordChange) && <div className="container"><div className="alert alert-warning">Invalid Credentials</div></div>
+        } 
+        {
+          (this.state.hasLoginFailed && this.state.forcePasswordChange) && <div className="container"><div className="alert alert-default">Change Password</div></div>
+        }
+        {
+          (this.state.changePasswordFailed) && <div className="container"><div className="alert alert-danger">Change Password Failed</div></div>
+        }
+        {
+          (this.state.passwordChangeSuccessfully) && <div className="container"><div className="alert alert-success">Password Changed Successfully</div></div>
         }
         <Col lg="5" md="7">
           <Card className="bg-secondary shadow border-0">
-            <CardHeader className="bg-transparent pb-5">
+            {!this.state.forcePasswordChange && <CardHeader className="bg-transparent pb-5">
               <div className="text-muted text-center mt-2 mb-3">
                 <small>Sign in with</small>
               </div>
@@ -117,6 +168,8 @@ class Login extends React.Component {
                 </Button>
               </div>
             </CardHeader>
+            }
+            {!this.state.forcePasswordChange &&
             <CardBody className="px-lg-5 py-lg-5">
               <div className="text-center text-muted mb-4">
                 <small>Or sign in with credentials</small>
@@ -162,6 +215,51 @@ class Login extends React.Component {
                 </div>
               </Form>
             </CardBody>
+          }
+          {this.state.forcePasswordChange &&
+            <CardBody className="px-lg-5 py-lg-5">
+              <div className="text-center text-muted mb-4">
+                <small>Change your password</small>
+              </div>
+              <Form role="form" onSubmit={this.onFormSubmit}>
+                <FormGroup className="mb-3">
+                  <InputGroup className="input-group-alternative">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="ni ni-email-83" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input placeholder="username" type="text" name="username" disabled value={this.state.username} onChange={this.handleChange} />
+                  </InputGroup>
+                </FormGroup>
+                <FormGroup>
+                  <InputGroup className="input-group-alternative">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="ni ni-lock-circle-open" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input placeholder="New Password" type="password" name="newPassword" value={this.state.newPassword} onChange={this.handleChange} />
+                  </InputGroup>
+                </FormGroup>
+                <FormGroup>
+                  <InputGroup className="input-group-alternative">
+                    <InputGroupAddon addonType="prepend">
+                      <InputGroupText>
+                        <i className="ni ni-lock-circle-open" />
+                      </InputGroupText>
+                    </InputGroupAddon>
+                    <Input placeholder="New Password Again" type="password" name="newPasswordAgain" value={this.state.newPasswordAgain} onChange={this.handleChange} />
+                  </InputGroup>
+                </FormGroup>
+                <div className="text-center">
+                  <Button className="my-4" color="primary" disabled={(this.state.newPassword !== this.state.newPasswordAgain) || this.state.newPassword.length <= 3} onClick={this.handleChangePassword}>
+                    Change Password
+                  </Button>
+                </div>
+              </Form>
+            </CardBody>
+          }
           </Card>
           <Row className="mt-3">
             <Col xs="6">

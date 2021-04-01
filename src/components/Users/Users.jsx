@@ -52,7 +52,7 @@ render () {
                               
                               <td>{user.email}</td>
                               <td>{user.created}</td>
-                              <td>{user.roles.map((value,index) => { if((index+1)%2==0) {return <React.Fragment> <Badge color="primary">{value.name}</Badge>  <br></br> </React.Fragment> } else {return <Badge color="primary">{value.name}</Badge>}})}</td>
+                              <td>{user.roles.map((value,index) => { if((index+1)%2==0) {return <React.Fragment> <Badge color="primary">{value.name}</Badge>  <br></br> </React.Fragment> } else {return <React.Fragment><Badge color="primary">{value.name}</Badge>&nbsp;</React.Fragment>}})}</td>
                               <td>{user.isEnabled && <Badge color="success">Enabled</Badge>} {!user.isEnabled && <Badge color="warning">Disabled</Badge>}</td>
                               <td>{user.forcePasswordChange && <Badge color="danger">Required</Badge>}</td>
 

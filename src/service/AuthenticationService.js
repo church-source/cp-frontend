@@ -25,6 +25,19 @@ class AuthenticationService {
         })
     }
 
+    executeChangePasswordWithChangePasswordToken(username, oldPassword, newPassword, changePasswordToken) {
+        let config = {
+            headers: {
+              'Authorization': this.createJWTToken(changePasswordToken)
+            }
+        }    
+        return api.patch(`user/changePassword`, {
+            username,
+            oldPassword,
+            newPassword
+        }, config)
+    }
+
     createBasicAuthToken(username, password) {
         return 'Basic ' + window.btoa(username + ":" + password)
     }

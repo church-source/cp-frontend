@@ -20,8 +20,11 @@ import Login from "views/Login.jsx";
 import People from "views/People.jsx";
 import Settings from "views/Settings.jsx";
 import Users from "views/Users.jsx";
+import Roles from "views/Roles.jsx";
 import AddPerson from "views/AddPerson.jsx";
+import AddUser from "views/AddUser.jsx";
 import ViewEditPerson from "views/ViewEditPerson.jsx";
+import ViewEditRole from "views/ViewEditRole.jsx";
 import ViewEditUser from "views/ViewEditUser.jsx";
 
 
@@ -92,10 +95,10 @@ var routes = [
   },
   {
     path: "/users",
-    name: "Users",
+    name: "Manage Users",
     sidebar: false,
     settingSidebar: true,
-    icon: "ni ni-settings-gear-65 text-primary",
+    icon: "ni ni-circle-08 text-primary",
     component: Users,
     layout: "/settings"
   } ,
@@ -107,6 +110,33 @@ var routes = [
     icon: "ni ni-bullet-list-67 text-red",
     component: ViewEditUser,
     layout: "/settings"
-  }  
+  },
+  {
+    path: "/user",
+    name: "Add User",
+    sidebar: false,
+    settingSidebar: false,
+    icon: "ni ni-bullet-list-67 text-red",
+    component: AddUser,
+    layout: "/settings"
+  },  
+  {
+    path: "/roles",
+    name: "Manage Roles",
+    sidebar: false,
+    settingSidebar: true,
+    icon: "ni ni-lock-circle-open text-red",
+    component: Roles,
+    layout: "/settings"
+  },
+  {
+    path: "/role/:id",
+    name: "View/Edit Role",
+    sidebar: false,
+    settingSidebar: false,
+    icon: "ni ni-bullet-list-67 text-red",
+    component: ViewEditRole,
+    layout: "/settings"
+  }
 ];
 export default routes;

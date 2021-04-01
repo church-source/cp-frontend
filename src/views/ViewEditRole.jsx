@@ -41,24 +41,20 @@ import {
 // core components
 import Header from "components/Headers/Header.jsx"
 
-
-
-class ViewEditUser extends React.Component {
+class ViewEditRole extends React.Component {
   
   constructor(){
     super()
 
     //state for characters value//
     this.state = {
-      roles: [],
-      user: {username:"",email:"",roles:[], forcePasswordChange:true, isEnabled:true},
+      privileges: [],
+      role: {name:"", privileges:[]},
       editing: false,
       initialState: {},
       pageHeading: ""
     }  
-    this.handleEmailChange = this.handleEmailChange.bind(this)
-    this.handleUserNameChange = this.handleUserNameChange.bind(this)
-    this.handleCheckboxChange = this.handleCheckboxChange.bind(this)
+    this.handleRoleNameChange = this.handleRoleNameChange.bind(this)
     this.handleEditButtonClick = this.handleEditButtonClick.bind(this)
     this.handleCancelButtonClick = this.handleCancelButtonClick.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
@@ -71,9 +67,9 @@ class ViewEditUser extends React.Component {
     handleSelect(val) {
       if(val !== "") {
         this.setState((prevState) => {
-          let user = Object.assign({}, prevState.user)
-          user.roles = val;                 
-          return { user }                                 
+          let role = Object.assign({}, prevState.role)
+          role.privileges = val;                 
+          return { role }                                 
         })
       }
     }
@@ -94,9 +90,9 @@ class ViewEditUser extends React.Component {
       editing: false
     }))
     event.preventDefault();
-    console.log(this.state.user);
-    const clonedState = clonedeep(this.state.user)
-    api.put('/churchauth/user/' + this.state.user.id,
+    console.log(this.state.role);
+    const clonedState = clonedeep(this.state.role)
+    api.put('/churchauth/role/' + this.state.role.id,
       clonedState
     ).then(response => {
           console.log("Successful" + response.data);
@@ -118,53 +114,30 @@ class ViewEditUser extends React.Component {
     const initialState = clonedeep(this.state.initialState)
 
     this.setState(prevState => ({
-      user: initialState
+      role: initialState
     }))
   }
 
-  handleUserNameChange(event) {
-    let newUserName = event.target.value
+  handleRoleNameChange(event) {
+    let newRoleName = event.target.value
     this.setState((prevState) => {
-      let user = Object.assign({}, prevState.user)
-      user.username = newUserName
-      return { user }
-    })
-  }
-
-  handleEmailChange = (event) => {
-    let newEmail = event.target.value
-    this.setState((prevState) => {
-      let user = Object.assign({}, prevState.user)
-      user.email = newEmail;                 
-      return { user }                                 
-    })
-  }
-
-  handleCheckboxChange = (event) => {
-    const target = event.target;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    const name = target.name;
-    console.log('checkbox changed')
-    this.setState((prevState) => {
-      let user = Object.assign({}, prevState.user)
-      user[name] = value;  
-      console.log(user);              
-      return { user }                                 
+      let role = Object.assign({}, prevState.role)
+      role.name = newRoleName
+      return { role }
     })
   }
 
   initializeStateFromInitialData = (data) => {
     const initialData = clonedeep(data)
     this.setState({ initialState: initialData })
-    this.setState({ user: data })
+    this.setState({ role: data })
     this.setState(prevState => ({
-      pageHeading: data.username
+      pageHeading: data.name
     }))
   }
 
-
-  initializeRoles = (roles) => {
-    this.setState({ roles: roles })
+  initializePrivileges = (privileges) => {
+    this.setState({ privileges: privileges })
   }
 
   handleCancelButtonClick(event) {
@@ -181,12 +154,12 @@ class ViewEditUser extends React.Component {
     const {match} = this.props
     const id = match.params.id
 
-    api.get('/churchauth/role') //get all roles
+    api.get('/churchauth/privilege') //get all roles
     .then((data) => {
-      this.initializeRoles(data.data)
+      this.initializePrivileges(data.data)
     })
 
-    api.get('/churchauth/user/' + id)
+    api.get('/churchauth/role/' + id)
     .then((data) => {
       this.initializeStateFromInitialData(data.data)
     })
@@ -225,7 +198,7 @@ class ViewEditUser extends React.Component {
                   {/*<Form>*/}
                   <Form autoComplete="zzz" onSubmit={this.handleSubmit}>
                     <h6 className="heading-small text-muted mb-4">
-                      User Info
+                      Role Info
                     </h6>
                     <div className="pl-lg-4">
                       <Row>
@@ -233,16 +206,16 @@ class ViewEditUser extends React.Component {
                           <FormGroup>
                             <label
                               className="form-control-label"
-                              htmlFor="input-username"
+                              htmlFor="input-rolename"
                             >
-                              User Name
+                              Role Name
                             </label>
                             <Input
                               className="form-control"
-                              name="userName"
-                              onChange={this.handleUserNameChange}
-                              value={this.state.user.username || ''}
-                              id="input-username"
+                              name="roleName"
+                              onChange={this.handleRoleNameChange}
+                              value={this.state.role.name || ''}
+                              id="input-rolename"
                               type="text"
                               disabled={!this.state.editing}
                               autoComplete="zzz"
@@ -250,74 +223,9 @@ class ViewEditUser extends React.Component {
                           </FormGroup>
                         </Col>
                         <Col lg="6"> </Col>
-                        <Col lg="6">
-                          <FormGroup>
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-email"
-                            >
-                              Email
-                            </label>
-
-                            <Input
-                              className="form-control"
-                              name="email"
-                              onChange={this.handleEmailChange}
-                              value={this.state.user.email || ''}
-                              id="input-email"
-                              type="text"
-                              disabled={!this.state.editing}
-                              autoComplete="zzz"
-                            />
-                          </FormGroup>
-                        </Col>
-                        <Col lg="6"> </Col>
-                        <Col lg="12">
-                        <FormGroup>
-                            <Input
-                              className="form-check"
-                              checked={this.state.user.isEnabled}
-                              name="isEnabled"
-                              onChange={this.handleCheckboxChange}
-                              id="input-enabled"
-                              type="checkbox"
-                              disabled={!this.state.editing}
-                              autoComplete="zzz"
-                            />
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-enabled"
-                            >
-                              Enabled                 
-                            </label>
-                        </FormGroup>
-
-                        </Col>
-
-                        <Col lg="12">
-                          <FormGroup>
-                            <Input
-                              className="form-check"
-                              checked={this.state.user.forcePasswordChange}
-                              name="forcePasswordChange"
-                              onChange={this.handleCheckboxChange}
-                              id="input-forcePasswordChange"
-                              type="checkbox"
-                              disabled={!this.state.editing}
-                              autoComplete="zzz"
-                            />
-                            <label
-                              className="form-control-label"
-                              htmlFor="input-forcePasswordChange"
-                            >
-                              Force Password Change
-                            </label>
-                          </FormGroup>
-                        </Col>
-                      </Row>
-                      <hr className="my-4" />
+                        </Row>
                       <h6 className="heading-small text-muted mb-4">
-                        Roles
+                        Privileges
                       </h6>
                       <Col lg="6">
                       <FormGroup>
@@ -325,47 +233,25 @@ class ViewEditUser extends React.Component {
                             className="form-select"
                             classNamePrefix="select"
                             onChange={this.handleSelect}
-                            value={this.state.user.roles}
+                            value={this.state.role.privileges}
                             getOptionLabel={option =>
                               `${option.name}`
                             }
                             getOptionValue={option => `${option.id}`}
-                            options={this.state.roles}
+                            options={this.state.privileges}
                             isSearchable={true}
                             isMulti
                             filterOption={this.customFilter}
                             onInputChange={this.handleSelect}
                             noOptionsMessage={() => null}
-                            placeholder={'Select Roles'}
+                            placeholder={'Select Privileges'}
                             autoFocus={true}
                             menuIsOpen={this.state.menuOpen}
                             isDisabled={!this.state.editing}
                           />                     
-                          {/*
-                            this.state.roles.map((value, index) => {
-                            return <Col lg="4"><FormGroup><Input
-                                className="form-check"
-                                checked={this.doesUserHaveRole}
-                                name={value.name}
-                                onChange={this.handleCheckboxChange}
-                                id={"input-"+value.name}
-                                type="checkbox"
-                                disabled={!this.state.editing}
-                                autoComplete="zzz"
-                              />
-                              <label
-                                className="form-control-label"
-                                htmlFor="input-forcePasswordChange"
-                              >
-                                
-                                </label>
-                              </FormGroup></Col>
-                            })
-                          */}
 
                         </FormGroup>
                         </Col>
-                      </div>
                     <hr className="my-4" />
                     <Col className="text-right" lg="12">
                     <Button
@@ -383,25 +269,8 @@ class ViewEditUser extends React.Component {
                         Save
                       </Button>
                       </Col>
-
+                    </div>
                     </Form>
-
-                    {/* Description 
-                    <h6 className="heading-small text-muted mb-4">About me</h6>
-                    <div className="pl-lg-4">
-                      <FormGroup>
-                        <label>About Me</label>
-                        <Input
-                          className="form-control-alternative"
-                          placeholder="A few words about you ..."
-                          rows="4"
-                          defaultValue="A beautiful Dashboard for Bootstrap 4. It is Free and
-                          Open Source."
-                          type="textarea"
-                        />
-                      </FormGroup>
-                    </div>*/}
-                  {/*</Form>*/}
                 </CardBody>
               </Card>
             </Col>
@@ -412,4 +281,4 @@ class ViewEditUser extends React.Component {
   }
 }
 
-export default ViewEditUser
+export default ViewEditRole
