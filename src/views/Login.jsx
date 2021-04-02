@@ -106,7 +106,7 @@ class Login extends React.Component {
              })
              .catch((error) => {
                  this.setState({ showSuccessMessage: false })
-                 if(error.response.data.reason == "passwordExpired") {
+                 if(error.response != undefined && error.response.data != undefined && error.response.data.reason == "passwordExpired") {
                   this.setState({ forcePasswordChange: true })
                   this.setState({ changePasswordToken: error.response.data.changePasswordToken })
                  }

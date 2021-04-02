@@ -44,7 +44,7 @@ render () {
                               <Link to={"/settings/role/" + role.id}>{role.name}
                                 </Link>
                                   </div></td>
-                              <td>{role.privileges.map((privilege,index) => { if((index+1)%4==0) {return <React.Fragment> <Badge color="primary">{privilege.name}</Badge>  <br></br> </React.Fragment> } else {return <React.Fragment><Badge color="primary">{privilege.name}</Badge>&nbsp;&nbsp;</React.Fragment>}})}</td>
+                              <td>{role.privileges.map((privilege,index) => { if((index+1)%4==0) {return <React.Fragment key={privilege.id}> <Badge color="primary">{privilege.name}</Badge>  <br></br> </React.Fragment> } else {return <React.Fragment key={privilege.id}><Badge color="primary">{privilege.name}</Badge>&nbsp;&nbsp;</React.Fragment>}})}</td>
                             </tr>
                 ))}
             </tbody>

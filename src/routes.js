@@ -28,6 +28,8 @@ import ViewEditPerson from "views/ViewEditPerson.jsx";
 import ViewEditRole from "views/ViewEditRole.jsx";
 import ViewEditUser from "views/ViewEditUser.jsx";
 
+import FindSongs from "views/FindSongs.jsx";
+
 
 var routes = [
 
@@ -147,6 +149,15 @@ var routes = [
     icon: "ni ni-bullet-list-67 text-red",
     component: AddRole,
     layout: "/settings"
+  },
+  {
+    path: "/songs",
+    name: "FindSongs",
+    sidebar: true,
+    settingSidebar: false,
+    icon: "ni ni-note-03 text-red",
+    component: FindSongs,
+    layout: "/admin"
   }
 ];
 export default routes;
