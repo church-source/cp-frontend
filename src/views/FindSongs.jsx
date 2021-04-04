@@ -166,7 +166,7 @@ class FindSongs extends React.Component {
               </CardHeader>
               <Row>
               <Col lg="1"/>
-              <Col lg="4">
+              <Col lg="3">
 
                             <Input
                               className="form-control"
