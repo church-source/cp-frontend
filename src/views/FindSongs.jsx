@@ -218,7 +218,7 @@ class FindSongs extends React.Component {
                               <td>{song.style}</td>
                               <td>{<React.Fragment><a target="_blank" href={song.leadSheet}><Badge color="default">lead</Badge></a>&nbsp;
                               <a target="_blank" href={song.pianoSheet}><Badge color="default">piano</Badge></a>&nbsp;
-                              <a target="_blank" href={song.huitarSheet}><Badge color="default">guitar</Badge></a>&nbsp;
+                              <a target="_blank" href={song.guitarSheet}><Badge color="default">guitar</Badge></a>&nbsp;
                               <a target="_blank" href={song.lyricsSheet}><Badge color="default">lyrics</Badge></a>&nbsp;</React.Fragment>}</td></tr>
                 ))}
             </tbody>
