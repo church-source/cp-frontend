@@ -107,14 +107,15 @@ class FindSongs extends React.Component {
   }
 
   findSongs() {
-    if (this.state.searchString == undefined || this.state.searchString == "")
-      return;
-    
+
+    let params = {
+      limit: 500
+    }
+    if (this.state.searchString != undefined && this.state.searchString != "")
+      params.search =  this.state.searchString
+    console.log(params)
     api.get('/churchsongs/songs', {
-      params: {
-        search: "\"" + this.state.searchString + "\"",
-        limit: 500
-      }
+      params
     })
     //.then(res => res.json())
     .then((data) => {
@@ -185,7 +186,7 @@ class FindSongs extends React.Component {
                             />
                 </Col>
                 <Col lg="2">
-                  <Button  color="primary" type="button" onClick={this.findSongs}>
+                  <Button  color="primary" type="submit" onClick={this.findSongs}>
                     Search
                   </Button>
                 </Col>

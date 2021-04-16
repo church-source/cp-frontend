@@ -1,0 +1,29 @@
+.App {
+    font-family: sans-serif;
+    text-align: center;
+  }
+  
+  h4 {
+    text-align: left;
+    margin-left: 40px;
+  }
+  
+  /* For pdf */
+
+  .react-pdf__Page{
+    backgroundColor: 'tomato';
+  }
+
+  .react-pdf__Page__textContent {
+    border: 2px solid rgb(89, 110, 141);
+    box-shadow: 5px 5px 5px 5px #ccc;
+    border-radius: 5px;
+
+  }
+  
+ 
+  .react-pdf__Page__canvas {
+    margin: 0 auto;
+
+  }
+  
