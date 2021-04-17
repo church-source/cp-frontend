@@ -24,6 +24,8 @@ import Roles from "views/Roles.jsx";
 import AddPerson from "views/AddPerson.jsx";
 import AddUser from "views/AddUser.jsx";
 import AddRole from "views/AddRole.jsx";
+import AddSong from "views/AddSong.jsx";
+
 import ViewEditPerson from "views/ViewEditPerson.jsx";
 import ViewEditRole from "views/ViewEditRole.jsx";
 import ViewEditUser from "views/ViewEditUser.jsx";
@@ -167,6 +169,15 @@ var routes = [
     settingSidebar: false,
     icon: "ni ni-bullet-list-67 text-red",
     component: ViewEditSong,
+    layout: "/admin"
+  },
+  {
+    path: "/song",
+    name: "Add Song",
+    sidebar: false,
+    settingSidebar: false,
+    icon: "ni ni-bullet-list-67 text-red",
+    component: AddSong,
     layout: "/admin"
   }
 ];

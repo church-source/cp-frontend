@@ -159,7 +159,7 @@ class FindSongs extends React.Component {
                   </Col>
                   <Col sm="4" className="text-right">
                                    <div><a
-                                    href={"/settings/song"}
+                                    href={"/admin/song"}
                                     id="tooltip742438047">                  <i className="fas fa-plus fa-2x" />  </a></div>
   
                   </Col>

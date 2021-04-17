@@ -55,7 +55,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 });
 */
 
-class ViewEditSong extends React.Component {
+class AddSong extends React.Component {
   
   constructor(){
     super()
@@ -158,6 +158,20 @@ class ViewEditSong extends React.Component {
     }))
   }
 
+  handleSubmit(event) {
+    this.setState(prevState => ({
+      editing: false
+    }))
+    event.preventDefault();
+
+    const clonedState = clonedeep(this.state.song)
+
+    api.post('/churchsongs/song',
+      clonedState
+    ).then(response => {
+      document.location = "song/" + response.data.id;
+    })
+  }
 
   initializeArtists = (artists) => {
     this.setState({ artists: artists })
@@ -185,12 +199,6 @@ class ViewEditSong extends React.Component {
     .then((data) => {
       this.initializeArtists(data.data)
     })
-
-    api.get('/churchsongs/song/' + id)
-    .then((data) => {
-      this.initializeStateFromInitialData(data.data)
-    })
-
     
     .catch(console.log)
   }
@@ -208,34 +216,15 @@ class ViewEditSong extends React.Component {
                   <Row className="align-items-center">
                     <Col xs="10">
                     </Col>
-                    
-                    <Col className="text-right" xs="2">
-                      <Button
-                        color="primary"
-                        onClick={this.handleEditButtonClick}
-                        size="sm"
-                        disabled={this.state.editing}
-                      >
-                        { this.state.editing === true && "Editing..."}{this.state.editing === false && "Edit"}
-                      </Button>
-                    </Col>
                   </Row>
                 </CardHeader>
                 <CardBody>
                   {/*<Form>*/}
                   <Form autoComplete="zzz" onSubmit={this.handleSubmit}>
                     <h6 className="heading-small text-muted mb-4">
-                    {this.state.song.code} - {this.state.song.name}
+                      Add a New Song
                     </h6>
                     <div >
-                    { (!this.state.editing && this.state.song.videoLink !== undefined && this.state.song.videoLink !== null && this.state.song.videoLink !== "") && <React.Fragment><Row><Col lg="2"></Col>
-                        <Col lg="8"><div class="react-player">
-                          <ReactPlayer
-                            url={this.state.song.videoLink}
-                            width='100%'
-                            />
-                          </div><br/></Col><Col lg="2"/></Row></React.Fragment>
-                        }
                       <Row>
                         <Col lg="1">
                           <FormGroup>
@@ -252,7 +241,6 @@ class ViewEditSong extends React.Component {
                               value={this.state.song.code || ''}
                               id="input-code"
                               type="text"
-                              disabled={!this.state.editing}
                               autoComplete="zzz"
                             />
                           </FormGroup>
@@ -272,7 +260,6 @@ class ViewEditSong extends React.Component {
                               value={this.state.song.name || ''}
                               id="input-name"
                               type="text"
-                              disabled={!this.state.editing}
                               autoComplete="zzz"
                             />
                           </FormGroup>
@@ -293,7 +280,6 @@ class ViewEditSong extends React.Component {
                               value={this.state.song.secondaryName || ''}
                               id="input-secondaryName"
                               type="text"
-                              disabled={!this.state.editing}
                               autoComplete="zzz"
                             />
                           </FormGroup>
@@ -324,7 +310,6 @@ class ViewEditSong extends React.Component {
                             placeholder={'Select Artist'}
                             autoFocus={true}
                             menuIsOpen={this.state.menuOpen}
-                            isDisabled={!this.state.editing}
                           />                     
 
                         </FormGroup>
@@ -345,7 +330,6 @@ class ViewEditSong extends React.Component {
                               value={this.state.song.songKey || ''}
                               id="input-songKey"
                               type="text"
-                              disabled={!this.state.editing}
                               autoComplete="zzz"
                             />
                           </FormGroup>
@@ -366,7 +350,6 @@ class ViewEditSong extends React.Component {
                               value={this.state.song.style || ''}
                               id="input-style"
                               type="text"
-                              disabled={!this.state.editing}
                               autoComplete="zzz"
                             />
                           </FormGroup>
@@ -387,7 +370,6 @@ class ViewEditSong extends React.Component {
                               value={this.state.song.tempo || ''}
                               id="input-tempo"
                               type="text"
-                              disabled={!this.state.editing}
                               autoComplete="zzz"
                             />
                           </FormGroup>
@@ -408,14 +390,11 @@ class ViewEditSong extends React.Component {
                               value={this.state.song.ccliNumber || ''}
                               id="input-ccliNumber"
                               type="text"
-                              disabled={!this.state.editing}
                               autoComplete="zzz"
                             />
                           </FormGroup>
                         </Col>
                         <Col lg="6"> </Col>
-                        {this.state.editing && 
-                        <React.Fragment>
                         <Col lg="6">
                           <FormGroup>
                             <label
@@ -432,14 +411,11 @@ class ViewEditSong extends React.Component {
                               value={this.state.song.leadSheet || ''}
                               id="input-leadSheet"
                               type="text"
-                              disabled={!this.state.editing}
                               autoComplete="zzz"
                             />
                           </FormGroup>
                         </Col>
                         <Col lg="6"> </Col>
-                        {this.state.editing && <React.Fragment>
-
                           <Col lg="6">
                           <FormGroup>
                             <label
@@ -456,15 +432,11 @@ class ViewEditSong extends React.Component {
                               value={this.state.song.guitarSheet || ''}
                               id="input-guitarSheet"
                               type="text"
-                              disabled={!this.state.editing}
                               autoComplete="zzz"
                             />
                           </FormGroup>
                           </Col>
-                          </React.Fragment>
-                        }
                         <Col lg="6"> </Col>
-                        {this.state.editing && <React.Fragment>
                           <Col lg="6">
 
                            <FormGroup>
@@ -482,14 +454,12 @@ class ViewEditSong extends React.Component {
                               value={this.state.song.pianoSheet || ''}
                               id="input-pianoSheet"
                               type="text"
-                              disabled={!this.state.editing}
                               autoComplete="zzz"
                             />
                           </FormGroup>
                         </Col>
                         <Col lg="6"> </Col>
-                        </React.Fragment>}
-                        {this.state.editing && <React.Fragment>
+
                         <Col lg="6">
                           <FormGroup>
                             <label
@@ -506,15 +476,12 @@ class ViewEditSong extends React.Component {
                               value={this.state.song.lyricsSheet || ''}
                               id="input-lyricsSheet"
                               type="text"
-                              disabled={!this.state.editing}
                               autoComplete="zzz"
                             />
                           </FormGroup>
                         </Col>
-                        <Col lg="6"> </Col></React.Fragment>
-                        }
-                        </React.Fragment>}
-                        {this.state.editing && <Col lg="6">
+                        <Col lg="6"> </Col>
+                         <Col lg="6">
                           <FormGroup>
                             <label
                               className="form-control-label"
@@ -530,65 +497,22 @@ class ViewEditSong extends React.Component {
                               value={this.state.song.videoLink || ''}
                               id="input-videoLink"
                               type="text"
-                              disabled={!this.state.editing}
                               autoComplete="zzz"
                             />
                           </FormGroup>
-                        </Col>}
+                        </Col>
                       </Row>
-                      {!this.state.editing && 
-                      <Row>
-                      {(this.state.song.leadSheet != undefined && this.state.song.leadSheet !== "") && <React.Fragment>
-                        <a target="_blank" href={this.state.song.leadSheet}>Lead Sheet
-                          <div style={{ width: 200}}>
-                          <Document file={this.state.song.leadSheet}>
-                            <Page size="TABLOID"  pageNumber={1} width={200} />
-                          </Document>
-                          </div>
-                        </a>&nbsp;</React.Fragment>
-                      }
-                      {(this.state.song.pianoSheet != undefined && this.state.song.pianoSheet !== "") && <React.Fragment>
-                        <a target="_blank" href={this.state.song.pianoSheet}>Piano Sheet 
-                          <div style={{ width: 200}}>
-                          <Document file={this.state.song.pianoSheet}>
-                            <Page size="TABLOID"  pageNumber={1} width={200} />
-                          </Document>
-                          </div>
-                        </a>&nbsp;</React.Fragment>
-                      }
-                      {(this.state.song.guitarSheet != undefined && this.state.song.guitarSheet !== "") && <React.Fragment>
-                        <a target="_blank" href={this.state.song.guitarSheet}>Guitar Chords 
-                          <div style={{ width: 200}}>
-                          <Document file={this.state.song.guitarSheet}>
-                            <Page size="TABLOID"  pageNumber={1} width={200} />
-                          </Document>
-                          </div>
-                        </a>&nbsp;</React.Fragment>
-                      }
-                      {(this.state.song.lyricsSheet != undefined && this.state.song.lyricsSheet !== "") && <React.Fragment>
-                        <a target="_blank" href={this.state.song.lyricsSheet}>Lyrics 
-                          <div style={{ width: 200}}>
-                          <Document file={this.state.song.lyricsSheet}>
-                            <Page size="TABLOID"  pageNumber={1} width={200} />
-                          </Document>
-                          </div>
-                        </a>&nbsp;</React.Fragment>
-                      }
-                      </Row> 
-                      }
                       </div>
                     <Col className="text-right" lg="12">
                     <Button
                         color="secondary"
                         onClick={this.handleCancelButtonClick}
-                        hidden={!this.state.editing}
                       >
                         Cancel
                       </Button>
                       < Button
                         color="primary"
                         onClick={this.handleSubmit}
-                        hidden={!this.state.editing}
                       >
                         Save
                       </Button>
@@ -622,4 +546,4 @@ class ViewEditSong extends React.Component {
   }
 }
 
-export default ViewEditSong
+export default AddSong
