@@ -217,10 +217,10 @@ class FindSongs extends React.Component {
                               <td>{song.secondaryName}</td>
                               <td>{song.artist.artistName}</td>
                               <td>{song.style}</td>
-                              <td>{<React.Fragment><a target="_blank" href={song.leadSheet}><Badge color="default">lead</Badge></a>&nbsp;
-                              <a target="_blank" href={song.pianoSheet}><Badge color="default">piano</Badge></a>&nbsp;
-                              <a target="_blank" href={song.guitarSheet}><Badge color="default">guitar</Badge></a>&nbsp;
-                              <a target="_blank" href={song.lyricsSheet}><Badge color="default">lyrics</Badge></a>&nbsp;</React.Fragment>}</td></tr>
+                              <td>{<React.Fragment> {(song.leadSheet != undefined && song.leadSheet!== "") && <React.Fragment> <a target="_blank" href={song.leadSheet}><Badge color="default">lead</Badge></a>&nbsp;</React.Fragment>}
+                              {(song.pianoSheet != undefined && song.pianoSheet!== "") && <React.Fragment> <a target="_blank" href={song.pianoSheet}><Badge color="default">Piano</Badge></a>&nbsp;</React.Fragment>}
+                              {(song.guitarSheet != undefined && song.guitarSheet!== "") && <React.Fragment> <a target="_blank" href={song.guitarSheet}><Badge color="default">guitar</Badge></a>&nbsp;</React.Fragment>}
+                              {(song.lyricsSheet != undefined && song.lyricsSheet!== "") && <React.Fragment> <a target="_blank" href={song.lyricsSheet}><Badge color="default">lyrics</Badge></a>&nbsp;</React.Fragment>} </React.Fragment>}</td></tr>
                 ))}
             </tbody>
           </Table>}

@@ -547,7 +547,7 @@ class ViewEditSong extends React.Component {
                           </div>
                         </a>&nbsp;</React.Fragment>
                       }
-                      {(this.state.song.leadSheet != undefined && this.state.song.pianoSheet !== "") && <React.Fragment>
+                      {(this.state.song.pianoSheet != undefined && this.state.song.pianoSheet !== "") && <React.Fragment>
                         <a target="_blank" href={this.state.song.pianoSheet}>Piano Sheet 
                           <div style={{ width: 200}}>
                           <Document file={this.state.song.pianoSheet}>
@@ -556,7 +556,7 @@ class ViewEditSong extends React.Component {
                           </div>
                         </a>&nbsp;</React.Fragment>
                       }
-                      {(this.state.song.leadSheet != undefined && this.state.song.guitarSheet !== "") && <React.Fragment>
+                      {(this.state.song.guitarSheet != undefined && this.state.song.guitarSheet !== "") && <React.Fragment>
                         <a target="_blank" href={this.state.song.guitarSheet}>Guitar Chords 
                           <div style={{ width: 200}}>
                           <Document file={this.state.song.guitarSheet}>
@@ -565,7 +565,7 @@ class ViewEditSong extends React.Component {
                           </div>
                         </a>&nbsp;</React.Fragment>
                       }
-                      {(this.state.song.leadSheet != undefined && this.state.song.lyricsSheet !== "") && <React.Fragment>
+                      {(this.state.song.lyricsSheet != undefined && this.state.song.lyricsSheet !== "") && <React.Fragment>
                         <a target="_blank" href={this.state.song.lyricsSheet}>Lyrics 
                           <div style={{ width: 200}}>
                           <Document file={this.state.song.lyricsSheet}>
