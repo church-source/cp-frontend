@@ -43,6 +43,7 @@ import { Link } from 'react-router-dom';
 
 import Header from "components/Headers/Header.jsx"
 import api from '../service/api'
+import LoadingOverlay from 'react-loading-overlay';
 
 // core components
 
@@ -55,8 +56,8 @@ class FindSongs extends React.Component {
       totalPageCount: 0,
       dataFetched: false,
       songsForCurrentPage: [],
-      searchString: ''
-
+      searchString: '',
+      loading: true
     }
     this.handlePageDecrement = this.handlePageDecrement.bind(this)
     this.handlePageIncrement = this.handlePageIncrement.bind(this)
@@ -107,7 +108,8 @@ class FindSongs extends React.Component {
   }
 
   findSongs() {
-
+    this.setState({ loading: true })   
+    this.forceUpdate()
     let params = {
       limit: 500
     }
@@ -119,6 +121,7 @@ class FindSongs extends React.Component {
     })
     //.then(res => res.json())
     .then((data) => {
+      this.setState({ loading: false })      
       console.log(data.data)
       this.setState({ songs: data.data })
       this.setState({ dataFetched: true })
@@ -133,7 +136,10 @@ class FindSongs extends React.Component {
 
       this.updateSongsForCurrentPage()
     })
-    .catch(console.log)
+    .catch((error) => { 
+      console.log (error)
+      this.setState({ loading: false })
+    })
 
   }
 
@@ -192,7 +198,12 @@ class FindSongs extends React.Component {
                 </Col>
                 </Row>
                 <br/>
-              {this.state.dataFetched && <Table className="align-items-center table-flush" responsive>
+                <LoadingOverlay
+                    active={this.state.loading}
+                    spinner
+                    text='Loading your content...'
+                    >
+              {this.state.dataFetched && this.state.songsForCurrentPage.length >0 && <Table className="align-items-center table-flush" responsive>
             <thead className="thead-light">
               <tr>
                 <th scope="col">Code</th>
@@ -223,7 +234,7 @@ class FindSongs extends React.Component {
                               {(song.lyricsSheet != undefined && song.lyricsSheet!== "") && <React.Fragment> <a target="_blank" href={song.lyricsSheet}><Badge color="default">lyrics</Badge></a>&nbsp;</React.Fragment>} </React.Fragment>}</td></tr>
                 ))}
             </tbody>
-          </Table>}
+          </Table>} { this.state.dataFetched && this.state.songsForCurrentPage.length ==0 && <Row><Col lg="1"></Col><Col lg="2"><div><h3>No Results Returned</h3></div></Col></Row> }
               <CardFooter className="py-4">
                   <nav aria-label="...">
                   <Pagination
@@ -269,6 +280,7 @@ class FindSongs extends React.Component {
                         </Pagination>
                   </nav>
                 </CardFooter>
+                </LoadingOverlay>
             </Card>
           </div>
           </Row>

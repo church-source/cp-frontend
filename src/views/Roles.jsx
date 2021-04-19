@@ -32,6 +32,7 @@ import {
 
 import Header from "components/Headers/Header.jsx"
 import api from '../service/api'
+import LoadingOverlay from 'react-loading-overlay';
 
 // core components
 
@@ -42,7 +43,8 @@ class RolesView extends React.Component {
       roles: [],
       currentPageNumber: 1,
       totalPageCount: 0,
-      dataFetched: false
+      dataFetched: false,
+      loading: true
     }
     this.handlePageDecrement = this.handlePageDecrement.bind(this)
     this.handlePageIncrement = this.handlePageIncrement.bind(this)
@@ -66,10 +68,11 @@ class RolesView extends React.Component {
 
   componentDidMount() {
     let base64 = require('base-64');
-
+    this.state.loading = true
     api.get('/churchauth/role')
     //.then(res => res.json())
     .then((data) => {
+      this.state.loading = false
       console.log(data.data)
       this.setState({ roles: data.data })
       this.setState({ dataFetched: true })
@@ -82,7 +85,10 @@ class RolesView extends React.Component {
       let tpC= Math.floor((userCountForPagination/10) + 1)
       this.setState({ totalPageCount: tpC})
     })
-    .catch(console.log)
+    .catch((error) => { 
+      console.log (error)
+      this.state.loading = false 
+    })
   }
 
   render() {
@@ -95,6 +101,11 @@ class RolesView extends React.Component {
         <Container className="mt--7" fluid>
           <Row>
           <div className="col">
+          <LoadingOverlay
+                    active={this.state.loading}
+                    spinner
+                    text='Loading your content...'
+                    >
             <Card className="shadow">
               <CardHeader className="border-0">
                 <Row >
@@ -156,6 +167,7 @@ class RolesView extends React.Component {
                   </nav>
                 </CardFooter>
             </Card>
+            </LoadingOverlay>
           </div>
           </Row>
         </Container>

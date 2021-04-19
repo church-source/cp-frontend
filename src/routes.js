@@ -32,6 +32,7 @@ import ViewEditUser from "views/ViewEditUser.jsx";
 import ViewEditSong from "views/ViewEditSong.jsx";
 
 import FindSongs from "views/FindSongs.jsx";
+import SongDatabase from "views/SongDatabase.jsx";
 
 
 var routes = [
@@ -155,11 +156,20 @@ var routes = [
   },
   {
     path: "/songs",
-    name: "FindSongs",
+    name: "Find Songs",
     sidebar: true,
     settingSidebar: false,
     icon: "ni ni-note-03 text-red",
     component: FindSongs,
+    layout: "/admin"
+  },
+  {
+    path: "/songdb",
+    name: "Song Database",
+    sidebar: true,
+    settingSidebar: false,
+    icon: "ni ni-note-03 text-red",
+    component: SongDatabase,
     layout: "/admin"
   },
   {

@@ -32,6 +32,7 @@ import {
 
 import Header from "components/Headers/Header.jsx"
 import api from '../service/api'
+import LoadingOverlay from 'react-loading-overlay';
 
 // core components
 
@@ -42,7 +43,8 @@ class PeopleView extends React.Component {
       people: [],
       currentPageNumber: 1,
       totalPageCount: 0,
-      dataFetched: false
+      dataFetched: false,
+      loading: true
     }
     this.handlePageDecrement = this.handlePageDecrement.bind(this)
     this.handlePageIncrement = this.handlePageIncrement.bind(this)
@@ -71,6 +73,7 @@ class PeopleView extends React.Component {
     //.then(res => res.json())
     .then((data) => {
       console.log(data.data)
+      this.setState({ loading: false })
       this.setState({ people: data.data })
       this.setState({ dataFetched: true })
       let userCountForPagination = data.data.length;
@@ -82,7 +85,10 @@ class PeopleView extends React.Component {
       let tpC= Math.floor((userCountForPagination/10) + 1)
       this.setState({ totalPageCount: tpC})
     })
-    .catch(console.log)
+    .catch((error) => { 
+      console.log (error)
+      this.setState({ loading: false })
+    })
   }
 
   render() {
@@ -95,6 +101,11 @@ class PeopleView extends React.Component {
         <Container className="mt--7" fluid>
           <Row>
           <div className="col">
+          <LoadingOverlay
+                    active={this.state.loading}
+                    spinner
+                    text='Loading your content...'
+                    >
             <Card className="shadow">
               <CardHeader className="border-0">
                 <Row >
@@ -108,6 +119,7 @@ class PeopleView extends React.Component {
   
                   </Col>
                 </Row>
+
               </CardHeader>
               {this.state.dataFetched && <People people={this.state.people} currentPageNumber={this.state.currentPageNumber} peoplePerPage={10}/>}
               <CardFooter className="py-4">
@@ -156,6 +168,7 @@ class PeopleView extends React.Component {
                   </nav>
                 </CardFooter>
             </Card>
+            </LoadingOverlay>
           </div>
           </Row>
         </Container>

@@ -32,6 +32,7 @@ import {
 
 import Header from "components/Headers/Header.jsx"
 import api from '../service/api'
+import LoadingOverlay from 'react-loading-overlay';
 
 // core components
 
@@ -42,7 +43,8 @@ class UsersView extends React.Component {
       users: [],
       currentPageNumber: 1,
       totalPageCount: 0,
-      dataFetched: false
+      dataFetched: false,
+      loading: true     
     }
     this.handlePageDecrement = this.handlePageDecrement.bind(this)
     this.handlePageIncrement = this.handlePageIncrement.bind(this)
@@ -65,11 +67,12 @@ class UsersView extends React.Component {
   }
 
   componentDidMount() {
-    let base64 = require('base-64');
-
+    let base64 = require('base-64')
+    this.state.loading = true
     api.get('/churchauth/user')
     //.then(res => res.json())
     .then((data) => {
+      this.setState({ loading: false })
       console.log(data.data)
       this.setState({ users: data.data })
       this.setState({ dataFetched: true })
@@ -82,7 +85,10 @@ class UsersView extends React.Component {
       let tpC= Math.floor((userCountForPagination/10) + 1)
       this.setState({ totalPageCount: tpC})
     })
-    .catch(console.log)
+    .catch((error) => { 
+      console.log (error)
+      this.setState({ loading: false })
+    })
   }
 
   render() {
@@ -95,6 +101,11 @@ class UsersView extends React.Component {
         <Container className="mt--7" fluid>
           <Row>
           <div className="col">
+          <LoadingOverlay
+                    active={this.state.loading}
+                    spinner
+                    text='Loading your content...'
+                    >
             <Card className="shadow">
               <CardHeader className="border-0">
                 <Row >
@@ -109,6 +120,7 @@ class UsersView extends React.Component {
                   </Col>
                 </Row>
               </CardHeader>
+              
               {this.state.dataFetched && <Users users={this.state.users} currentPageNumber={this.state.currentPageNumber} usersPerPage={10}/>}
               <CardFooter className="py-4">
                   <nav aria-label="...">
@@ -156,6 +168,7 @@ class UsersView extends React.Component {
                   </nav>
                 </CardFooter>
             </Card>
+            </LoadingOverlay>
           </div>
           </Row>
         </Container>
