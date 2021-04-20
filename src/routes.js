@@ -168,7 +168,7 @@ var routes = [
     name: "Song Database",
     sidebar: true,
     settingSidebar: false,
-    icon: "ni ni-note-03 text-red",
+    icon: "ni ni-archive-2 text-red",
     component: SongDatabase,
     layout: "/admin"
   },
