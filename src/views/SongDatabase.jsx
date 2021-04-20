@@ -56,7 +56,9 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 const columns = [{
   dataField: 'code',
   text: 'Song Code',
-  filter: textFilter()
+  filter: textFilter(),
+  formatter: (cell, row) =>  <Link to={"/admin/song/" + row.id}>{row.code}
+  </Link>
 }, 
   {
   dataField: 'name',
