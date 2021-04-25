@@ -10,7 +10,7 @@ const api =  axios.create({baseURL:API_URL,
 
 export const USER_NAME_SESSION_ATTRIBUTE_NAME = 'authenticatedUser'
 export const USER_ACCESS_TOKEN_ATTRIBUTE_NAME = 'accessToken'
-
+export const USER_ACCESS_PERMISSIONS = 'accessPermissions'
 class AuthenticationService {
 
     executeBasicAuthenticationService(username, password) {
@@ -47,10 +47,17 @@ class AuthenticationService {
         this.setupAxiosInterceptorsForBasicAuth(this.createBasicAuthToken(username, password))
     }
 
-    registerSuccessfulLoginForJwt(username, token) {
+    registerSuccessfulLoginForJwt(username, token, permissions) {
         sessionStorage.setItem(USER_NAME_SESSION_ATTRIBUTE_NAME, username)
         sessionStorage.setItem(USER_ACCESS_TOKEN_ATTRIBUTE_NAME, token)
+        sessionStorage.setItem(USER_ACCESS_PERMISSIONS, JSON.stringify(permissions))
         this.setupAxiosInterceptorsForJWTAuth(api)
+    }
+
+    userHasPermission(permission) {
+        if(sessionStorage.getItem(USER_ACCESS_PERMISSIONS) == null) 
+            return false;
+        return sessionStorage.getItem(USER_ACCESS_PERMISSIONS).includes(permission)
     }
 
     createJWTToken(token) {

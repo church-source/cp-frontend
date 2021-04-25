@@ -67,6 +67,7 @@ var routes = [
   {
     path: "/people",
     name: "People",
+    permission: "ViewPeople",
     sidebar: true,
     settingSidebar: false,
     icon: "ni ni-bullet-list-67 text-red",
@@ -76,6 +77,7 @@ var routes = [
   {
     path: "/person/:id",
     name: "View/Edit Person",
+    permission: "ViewPeople",
     sidebar: false,
     settingSidebar: false,
     icon: "ni ni-bullet-list-67 text-red",
@@ -85,6 +87,7 @@ var routes = [
   {
     path: "/person",
     name: "Add Person",
+    permission: "AddPeople",
     sidebar: false,
     settingSidebar: false,
     icon: "ni ni-bullet-list-67 text-red",
@@ -103,6 +106,7 @@ var routes = [
   {
     path: "/users",
     name: "Manage Users",
+    permission: "AddUser",
     sidebar: false,
     settingSidebar: true,
     icon: "ni ni-circle-08 text-primary",
@@ -113,6 +117,7 @@ var routes = [
     path: "/user/:id",
     name: "View/Edit User",
     sidebar: false,
+    permission: "ViewUser",
     settingSidebar: false,
     icon: "ni ni-bullet-list-67 text-red",
     component: ViewEditUser,
@@ -122,6 +127,7 @@ var routes = [
     path: "/user",
     name: "Add User",
     sidebar: false,
+    permission: "ViewUser",
     settingSidebar: false,
     icon: "ni ni-bullet-list-67 text-red",
     component: AddUser,
@@ -131,6 +137,7 @@ var routes = [
     path: "/roles",
     name: "Manage Roles",
     sidebar: false,
+    permission: "ViewRole",
     settingSidebar: true,
     icon: "ni ni-lock-circle-open text-red",
     component: Roles,
@@ -141,6 +148,7 @@ var routes = [
     name: "View/Edit Role",
     sidebar: false,
     settingSidebar: false,
+    permission: "ViewRole",
     icon: "ni ni-bullet-list-67 text-red",
     component: ViewEditRole,
     layout: "/settings"
@@ -150,6 +158,7 @@ var routes = [
     name: "Add Role",
     sidebar: false,
     settingSidebar: false,
+    permission: "AddRole",
     icon: "ni ni-bullet-list-67 text-red",
     component: AddRole,
     layout: "/settings"
@@ -159,6 +168,7 @@ var routes = [
     name: "Find Songs",
     sidebar: true,
     settingSidebar: false,
+    permission: "ViewSongs",
     icon: "ni ni-note-03 text-red",
     component: FindSongs,
     layout: "/admin"
@@ -168,6 +178,7 @@ var routes = [
     name: "Song Database",
     sidebar: true,
     settingSidebar: false,
+    permission: "ViewSongs",
     icon: "ni ni-archive-2 text-red",
     component: SongDatabase,
     layout: "/admin"
@@ -175,6 +186,7 @@ var routes = [
   {
     path: "/song/:id",
     name: "View/Edit Song",
+    permission: "ViewSongs",
     sidebar: false,
     settingSidebar: false,
     icon: "ni ni-bullet-list-67 text-red",
@@ -186,6 +198,7 @@ var routes = [
     name: "Add Song",
     sidebar: false,
     settingSidebar: false,
+    permission: "AddSongs",
     icon: "ni ni-bullet-list-67 text-red",
     component: AddSong,
     layout: "/admin"
