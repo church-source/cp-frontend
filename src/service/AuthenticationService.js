@@ -1,7 +1,7 @@
 //import api from './api'
 import axios from 'axios'
 
-const API_URL = 'http://' + window._env_.REACT_APP_API_URL + ':' + window._env_.REACT_APP_API_PORT + '/api/churchauth'
+const API_URL = 'https://' + window._env_.REACT_APP_API_URL + ':' + window._env_.REACT_APP_API_PORT + '/api/churchauth'
 const api =  axios.create({baseURL:API_URL, 
     headers: {
         'Accept': 'application/json',
